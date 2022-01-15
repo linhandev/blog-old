@@ -1,0 +1,16 @@
+---
+layout: "post"
+title: "privacy"
+date: "2022-01-14 19:26"
+---
+
+# GPG
+https://www.devdungeon.com/content/gpg-tutorial#create_key
+gpg --full-generate-key
+
+# 密码
+pass
+
+pass init "[GPG key id]"
+pass git init
+pass git remote add origin [repo 地址]
