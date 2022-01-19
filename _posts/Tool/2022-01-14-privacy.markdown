@@ -8,9 +8,22 @@ date: "2022-01-14 19:26"
 https://www.devdungeon.com/content/gpg-tutorial#create_key
 gpg --full-generate-key
 
+[//]: # (REF:https://www.phildev.net/pgp/gpg_moving_keys.html)
+
+[//]: # (TODO:导出成txt)
+
+导出
+gpg --export-secret-keys -a [keyid] > sk.asc
+gpg --export -a [keyid] > pk.asc
+
+导入
+
+gpg --import sk.asc
+gpg --import pk.asc
+
 # 密码
 pass
 
-pass init "[GPG key id]"
+pass init "[keyid]"
 pass git init
 pass git remote add origin [repo 地址]
