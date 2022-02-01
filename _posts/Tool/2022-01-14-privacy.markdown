@@ -1,30 +1,47 @@
 ---
 layout: "post"
-title: "privacy"
+title: "隐私相关"
 date: "2022-01-14 19:26"
 categories:
-  -
+  - Tool
+  - Privacy
 tags:
-  -
+  - Privacy
 published: false
 ---
 
 # GPG
-https://www.devdungeon.com/content/gpg-tutorial#create_key
+```shell
+gpg -k
+
+[//]: # (REF:https://www.devdungeon.com/content/gpg-tutorial#create_key)
 gpg --full-generate-key
 
+
 [//]: # (REF:https://www.phildev.net/pgp/gpg_moving_keys.html)
-
-[//]: # (TODO:导出成txt)
-
 导出
-gpg --export-secret-keys -a [keyid] > sk.asc
+gpg --export-secret-keys --armor [keyid] > sk.asc # armor: ascii format
 gpg --export -a [keyid] > pk.asc
 
 导入
-
 gpg --import sk.asc
-gpg --import pk.asc
+
+gpg --delete-secret-key [key-ID]
+gpg --delete-key [key-ID]
+
+gpg --edit-key [key-id]
+>trust
+>save
+
+信任
+gpg --export-ownertrust > trust.txt
+
+rm ~/.gnupg/trustdb.gpg
+gpg --import-ownertrust < trust.txt
+
+导出导入
+gpg --export-options backup --export-secret-keys [key-id]
+gpg --import-options restore --import
 
 # 密码
 pass
@@ -32,3 +49,4 @@ pass
 pass init "[keyid]"
 pass git init
 pass git remote add origin [repo 地址]
+```
