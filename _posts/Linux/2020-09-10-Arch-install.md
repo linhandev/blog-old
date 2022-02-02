@@ -65,6 +65,35 @@ quit # 退出iwctl
 <!-- ## raid -->
 [//]: # (TODO:怎么做raid)
 
+## Raid 0
+可选步骤，如果只有一块盘，或者配Raid 1觉得浪费空间，配Raid 0又怕丢数据直接进入下一部分。
+
+![image](https://user-images.githubusercontent.com/29757093/152065902-cb1b40ca-3005-48c9-9415-0cd39a9e38f4.png)
+
+之前在搜教程的时候看到[这个](https://forum.level1techs.com/t/arch-linux-install-with-2-nvmes-in-raid-0/147268/2)，笑了一下午。 /笑哭
+
+言归正传，如果电脑有多块硬盘配Raid可以加快读写速度。一些主板在硬件上有对Raid的支持，这种大概是在uefi界面里设置。我的电脑没有硬件支持所以配的是软件Raid。
+
+软件Raid需要操作系统，而uefi分区是在系统启动过程中，进入操作系统之前就要用到的，所以这个分区不能放在Raid 0里，放在Raid 1是可以的。我Raid 0的做法是首先在一块盘上创建uefi分区（分区1），剩下的所有空间创建另一个分区（分区2），之后在另一块盘上创建一个和分区2大小的分区（分区3）。最后分区2和分区3用mdadm配软件Raid 0。做swap的话是可以放在Raid 0里的。
+
+
+删除旧记录
+mdadm --misc --zero-superblock /dev/drive
+
+mdadm -C /dev/md0 -l raid0 -n 2 /dev/sd[b-c]1
+mdadm --create /dev/md0 --level=stripe --raid-devices=2 /dev/sd[b-c]1
+
+
+cat /proc/mdstat
+mdadm -E /dev/sd[b-c]1
+mdadm --detail /dev/md0
+
+
+mdadm --detail --scan --verbose   >>   /mnt/etc/mdadm.conf
+
+
+
+
 ## 磁盘分区
 首先看看电脑是不是开启了uefi，如果开了的话需要多做一个分区。
 ```shell
@@ -105,7 +134,7 @@ d # 删除一个分区，多次执行直到提示没有分区
 n # 创建分区
 p # 主分区
 # 回车，默认分区号
-# 默认起始位置 todo：还是块大小？
+# 默认起始位置
 +512M # 大小512M
 t # 修改分区类型
 L # 查看所有类型，应该有一个uefi
@@ -165,22 +194,34 @@ mkswap /dev/[swap分区]
 swapon /dev/[swap分区]
 ```
 
-<!-- ## 选择镜像
 下一步需要联网安装软件，选一个快的镜像可以节省很多时间
 ```shell
 pacman -Syy # 更新pacman数据库
 pacman -S reflector
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bk # 备份镜像列表
 reflector -c "CN" -l 20 -n 10 --sort rate --save /etc/pacman.d/mirrorlist
-``` -->
+```
 
 ## 安装Arch
 ```shell
 mount /dev/[主分区] /mnt
 pacstrap /mnt base linux linux-firmware vim sudo base-devel # 往主分区里安装，几分钟
 genfstab -U /mnt >> /mnt/etc/fstab
+```
+mdadm --detail --scan >> /mnt/etc/mdadm.conf
+
+
+```shell
 arch-chroot /mnt
 ```
+
+pacman -S mdadm
+
+/etc/mkinitcpio.conf
+HOOKS=(base udev autodetect keyboard modconf block mdadm_udev filesystems fsck)
+
+mkinitcpio -p linux
+
 
 ## 语言
 ```shell
@@ -214,7 +255,7 @@ vim /etc/hosts
 # 按 i 编辑，输入以下内容
 127.0.0.1 localhost
 ::1 localhost
-127.0.1.1 [刚才设置的的hostname]
+127.0.0.1 [刚才设置的的hostname]
 # 两下esc，输入 :wq 保存并退出
 ```
 
