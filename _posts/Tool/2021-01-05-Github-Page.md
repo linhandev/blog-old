@@ -50,6 +50,8 @@ Github上的项目可以自己新建也可以复制别人的，就做博客来�
 
 ![new project](/assets/img/post/Tool/new-project.png)
 
+![image](https://user-images.githubusercontent.com/29757093/152296633-62157681-e911-4fb8-82e6-ced17e103dff.png)
+
 一般建议添加一个README，空项目是没法直接pull的，需要本地先创建之后推上去稍微麻烦一点。
 
 git是一个代码版本管理工具，简单来说可以让你在写代码过程中创建一些存档点。如果只有一个开发者那么这些存档点就是一条直线，一个比一个新，像下面图里的红线。如果有多个开发者同时对项目做修改，存档点可以有一些平行的路径，像下面图里的蓝线和黄线。就做个人博客来说不需要了解很多的git知识，操作也不需要命令行，有很多带界面的git软件比如[Github Desktop](https://desktop.github.com/)。做博客最简单的方法是fork一个主题项目，将项目pull到本地，进行修改，之后再push回github的服务器上。后面用到的时候回说具体怎么操作。
