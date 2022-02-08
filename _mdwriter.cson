@@ -19,14 +19,14 @@ siteUrl: "https://linhandev.github.io/"
 
 # Root directory to your blog
 # - Leave it empty to use the current project path (recommended)
-siteLocalDir: "/home/lin/Desktop/git/blog/linhandev.github.io"
+siteLocalDir: ""
 # Directory to drafts from siteLocalDir
 siteDraftsDir: "_drafts/"
 # Directory to posts from siteLocalDir
 sitePostsDir: "_posts/"
 # Directory to images from siteLocalDir
 # - E.g. to use the current filename directory, can use {directory}
-siteImagesDir: "assets/img/{directory}/"
+siteImagesDir: "assets/img/post/{directory}/"
 
 # URLs to tags/posts/categories JSON files
 # https://github.com/zhuochun/md-writer/wiki/Settings-for-Front-Matters
@@ -60,7 +60,7 @@ date: "{date}"
 """
 
 # File extension of posts/drafts
-fileExtension: ".markdown"
+fileExtension: ".md"
 # File slug separator
 slugSeparator: "-"
 
