@@ -10,4 +10,7 @@ https://www.khanacademy.org/computing/computer-science/algorithms/asymptotic-not
 - 确定性：明确定义每一步操作
 - 可行性：每一步都能在一定时间内完成
 
-![for runtime](/images/2022/02/for-runtime.png)
+
+![for runtime](/assets/img/post/Algorithm/for-runtime.png)
+
+![running time](/assets/img/post/Algorithm/running-time.png)
