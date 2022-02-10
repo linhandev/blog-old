@@ -54,8 +54,14 @@ frontMatterDate: "{year}-{month}-{day} {hour}:{minute}"
 frontMatter: """
 ---
 layout: "{layout}"
+author: Lin Han
 title: "{title}"
 date: "{date}"
+categories:
+  -
+tags:
+  -
+public: false
 ---
 """
 
