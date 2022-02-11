@@ -208,10 +208,75 @@ lsblk # 再次查看分区情况
 ```shell
 # 没有uefi分区跳过这行
 mkfs.fat -F32 /dev/[uefi分区]
-mkfs.ext4 /dev/[主分区]
 mkswap /dev/[swap分区]
-swapon /dev/[swap分区]
+swapon /dev/[swap分区] # 可以写多个swap分区，比如 swapon /dev/nvme0n1p2 /dev/nvme1n1p3
 ```
+主分区文件系统有三种选择，绝大多数情况下ext4是最好的，如果想提升读写速度可以做前面的[软件raid](#raid)，如果想要snapshot功能可以用btrfs
+```shell
+mkfs.ext4 /dev/[主分区]
+```
+
+## btrfs
+可选步骤，btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，一个文件系统可以提供传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评极差，但是zfs因为开源协议问题不能合入linux内核，安装过程比btrfs麻烦很多。
+
+```shell
+mkfs.btrfs /dev/主分区
+```
+btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，官方给的一些常用例子
+
+```shell
+# Create a filesystem across four drives (metadata mirrored, linear data allocation)
+mkfs.btrfs -d single /dev/sdb /dev/sdc /dev/sdd /dev/sde # 简单跨盘，不raid
+
+# Stripe the data without mirroring, metadata are mirrored
+mkfs.btrfs -d raid0 /dev/sdb /dev/sdc # 相当于raid0
+
+# Use raid10 for both data and metadata
+mkfs.btrfs -m raid10 -d raid10 /dev/sdb /dev/sdc /dev/sdd /dev/sde
+
+# Don't duplicate metadata on a single drive (default on single SSDs)
+mkfs.btrfs -m single /dev/sdb
+```
+比如我做的两块盘raid
+
+![image](https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png)
+
+挂载btrfs分区，创建子卷
+
+```shell
+mount /dev/[btrfs的任意一个分区] /mnt
+btrfs su cr /mnt/@root
+btrfs su cr /mnt/@home
+btrfs su cr /mnt/@var # 一般放可变长度的文件，比如log，临时cache和数据库
+btrfs su cr /mnt/@srv # web服务器和ftp文件
+btrfs su cr /mnt/@opt # 第三方软件
+btrfs su cr /mnt/@tmp # 临时文件和cache
+btrfs su cr /mnt/@swap # swap文件推荐放进单独的子卷
+btrfs su cr /mnt/@.snapshot
+```
+
+挂载子卷
+[//]: # (TODO: cannot disable free space tree space_cache)
+```shell
+umount /mnt
+mount -o noatime,compress=lzo,space_cache,subvol=@root /dev/[btrfs的任意一个分区] /mnt
+mkdir /mnt/{boot,home,var,srv,opt,tmp,swap,.snapshot}
+mount -o noatime,compress=lzo,space_cache,subvol=@home /dev/[btrfs的任意一个分区] /mnt/home
+mount -o noatime,compress=lzo,space_cache,subvol=@srv /dev/[btrfs的任意一个分区] /mnt/srv
+mount -o noatime,compress=lzo,space_cache,subvol=@tmp /dev/[btrfs的任意一个分区] /mnt/tmp
+mount -o noatime,compress=lzo,space_cache,subvol=@opt /dev/[btrfs的任意一个分区] /mnt/opt
+mount -o noatime,compress=lzo,space_cache,subvol=@.snapshot /dev/[btrfs的任意一个分区] /mnt/.snapshot
+mount -o nodatacow,subvol=@swap /dev/[btrfs的任意一个分区] /mnt/swap
+mount -o nodatacow,subvol=@var /dev/[btrfs的任意一个分区] /mnt/var
+mount /dev/[uefi分区] /mnt/boot
+```
+noatime： 不写accesstime
+compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
+space_cache：目前已经是默认开启了，将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
+nodatacow：禁用cow，新数据直接覆盖
+
+![image](https://user-images.githubusercontent.com/29757093/153567324-e98fb530-8e95-49ab-9517-575f71ff5032.png)
+
 
 下一步需要联网安装软件，选一个快的镜像可以节省很多时间
 ```shell
@@ -222,10 +287,14 @@ reflector -c "CN" -l 20 -n 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
 ## 安装Arch
+[//]: # (TODO: ucode)
+ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-ucode或amd-ucode
+
 ```shell
 mount /dev/[主分区] /mnt
-pacstrap /mnt base linux linux-firmware vim sudo base-devel # 往主分区里安装，几分钟
+pacstrap /mnt base linux linux-firmware vim base-devel [intel/amd]-ucode # btrfs-progs 如果装btrfs
 genfstab -U /mnt >> /mnt/etc/fstab
+cat /mnt/etc/fstab
 ```
 
 不做Raid跳过下面这行，把mdadm配置写入文件
@@ -233,6 +302,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 mdadm --detail --scan >> /mnt/etc/mdadm.conf
 ```
 
+切换到新装好的系统
 ```shell
 arch-chroot /mnt
 ```
@@ -352,6 +422,9 @@ chown -R [用户名]:[用户名] /home/[用户名]
 reboot
 ```
 重启之后应该就能看到一个登陆界面，能登陆进去就是安装成功了！如果安装过程中有任何问题欢迎在下方留言。有关一些常用软件的安装在[下一篇文章](https://linhandev.github.io/posts/Arch-Apps/)中记录。
+
+
+[//]: # (swap btrfs: truncate -s 0 /swap/swapfile; chattr +C /swap/swapfile; btrfs property set /swap/swapfile compression none; dd if=/dev/zero of=/swap/swapfile bs=1G count=2 status=progress; chmod 600 /swap/swapfile; mkswap /swap/swapfile; swapon /swap/swapfile; vim /etc/fstab； /swap/swapfile none swap defaults 0 0 )
 
 参考资料：
 
