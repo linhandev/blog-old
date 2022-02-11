@@ -292,7 +292,7 @@ ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-
 
 ```shell
 mount /dev/[主分区] /mnt
-pacstrap /mnt base linux linux-firmware vim base-devel [intel/amd]-ucode # btrfs-progs 如果装btrfs
+pacstrap /mnt base linux linux-firmware vim base-devel opendoas [intel/amd]-ucode # 如果装btrfs加上btrfs-progs 
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 ```
@@ -407,10 +407,13 @@ systemctl enable lightdm
 ```shell
 useradd [用户名]
 passwd [用户名] # 设置新用户密码
-vim /etc/sudoers
+vim /etc/doas.conf
 # 添加一行
-[用户名] ALL=(ALL) ALL # 允许用户使用sudo
+permit persist [用户名] as root # 允许 用户名 作为root执行，persist是输入一次密码之后一段时间不用再输入
 # :wq! 保存并退出
+mv /usr/bin/sudo /usr/bin/sudo-bk
+ln -s /usr/bin/doas /usr/bin/sudo
+
 ls -lah /home/[用户名] # 检查是不是创建了用户的home目录，如果没有或者用户没有权限访问这个目录会在登录的时候登录成功，但是仍然返回登录界面
 mkdir /home/[用户名]
 chown -R [用户名]:[用户名] /home/[用户名]
