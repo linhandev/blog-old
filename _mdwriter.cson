@@ -57,6 +57,7 @@ layout: "{layout}"
 author: Lin Han
 title: "{title}"
 date: "{date}"
+math: true
 categories:
   -
 tags:
