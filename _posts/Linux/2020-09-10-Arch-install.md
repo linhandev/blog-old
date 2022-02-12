@@ -216,6 +216,9 @@ swapon /dev/[swap分区] # 可以写多个swap分区，比如 swapon /dev/nvme0n
 mkfs.ext4 /dev/[主分区]
 ```
 
+<details><summary>Btrfs</summary>
+<p>
+
 ## btrfs
 可选步骤，btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，一个文件系统可以提供传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评极差，但是zfs因为开源协议问题不能合入linux内核，安装过程比btrfs麻烦很多。
 
@@ -277,6 +280,10 @@ nodatacow：禁用cow，新数据直接覆盖
 
 ![image](https://user-images.githubusercontent.com/29757093/153567324-e98fb530-8e95-49ab-9517-575f71ff5032.png)
 
+</p>
+</details>
+<br>
+
 
 下一步需要联网安装软件，选一个快的镜像可以节省很多时间
 ```shell
@@ -292,7 +299,7 @@ ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-
 
 ```shell
 mount /dev/[主分区] /mnt
-pacstrap /mnt base linux linux-firmware vim base-devel opendoas [intel/amd]-ucode # 如果装btrfs加上btrfs-progs 
+pacstrap /mnt base linux linux-firmware vim base-devel opendoas [intel/amd]-ucode # 如果装btrfs加上btrfs-progs
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 ```
