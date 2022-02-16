@@ -75,9 +75,23 @@ Gamma Correction
 
 增强对比度
 - 线性拉伸
-
 ![linear stretching](/assets/img/post/Note/linear-stretching.png)
+  - 分段线性
+  ![piece wise linear](/assets/img/post/Note/piece-wise-linear.png)
+- 非线性拉伸
+  - Log变换：拉伸暗区域，压制亮区域
+    - g = blog(af+1)
+    ![log transform](/assets/img/post/Note/log-transform.png)
+  - 指数变换：放大亮的区域
+    - $g = b(e^{af}-1)$
+  - Gamma变换，Power law
+    ![power low](/assets/img/post/Note/power-low.png)
 
-- Log变换：适合图像中很多像素值都很小
+用强度下像素数量累积的函数做增强，总能得到一个比较平的histogram。对于原图的值x，算原图0～x值的概率p，x的新值是图像最大强度*p。
 
-![log transform](/assets/img/post/Note/log-transform.png)
+![flat](/assets/img/post/Note/flat.png)
+
+局部增强：图像可能整体对比度还可以，但是一些局部对比度不强，可以滑动窗口针对局部增强对比度
+
+在一些不重叠的区域里计算区域中心点的mapping，其他的位置用中心点距离加权平均
+![adaptive histogram](/assets/img/post/Note/adaptive-histogram.png)
