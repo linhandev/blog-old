@@ -2,7 +2,6 @@
 title: "应用层"
 author: Lin Han
 date: "2021-12-04 19:48"
-published: true
 categories:
   - Note
   - IAP

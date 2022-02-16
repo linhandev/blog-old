@@ -1,14 +1,15 @@
 ---
 layout: "post"
 author: Lin Han
-title: "video image processing"
+title: "图像处理笔记"
 date: "2022-02-13 01:04"
 math: true
 categories:
-  -
+  - Note
+  - "Video Image Processing"
 tags:
-  -
-public: false
+  - Note
+  - "Video Image Processing"
 ---
 
 ![color](/assets/img/post/Note/color.png)
