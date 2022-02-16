@@ -1,5 +1,5 @@
 ---
-title: "算法"
+title: "算法笔记"
 author: Lin Han
 date: "2022-01-03 02:07"
 published: true
