@@ -2,6 +2,7 @@
 title: 通用Linux功能
 author: Lin Han
 date: 2021-01-05 22:02 +8
+published: false
 categories:
   - Linux
 tags:

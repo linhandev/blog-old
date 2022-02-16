@@ -2,7 +2,6 @@
 title: "管理和安全"
 author: Lin Han
 date: "2021-12-07 19:35"
-published: false
 categories:
   - Note
   - IAP
