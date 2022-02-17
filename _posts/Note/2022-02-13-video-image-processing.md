@@ -199,6 +199,34 @@ $F\{f(x)\}=\frac{1}{2j}(\delta(u-f_x,v-f_y)-\delta(u+f_x, v+f_y))$
 
 ![2d seperate ft 2](/assets/img/post/Note/2d-seperate-ft-2.png)
 
-2D傅立叶旋转
+2D傅立叶旋转：空间可频域一起转
 
 ![2d ft rotate](/assets/img/post/Note/2d-ft-rotate.png)
+
+# DSFT, DFT
+![image](https://user-images.githubusercontent.com/29757093/154558905-18148dd9-20e4-4141-8c40-4b3f3d652b80.png)
+
+空间内直线在dft里垂直方向会有一条亮线，用所有的频率做一条直线出来
+
+![image](https://user-images.githubusercontent.com/29757093/154559492-b0e67d8e-aba1-403b-892f-45f0a8384dbd.png)
+
+![image](https://user-images.githubusercontent.com/29757093/154559546-ce9974ad-125e-492a-9ffc-3acbd9c0632e.png)
+
+有周期的会有亮点；亮线和图像线垂直；很规整的sinc，比较发散
+
+# 卷积
+
+![image](https://user-images.githubusercontent.com/29757093/154561517-ac5d5d52-9aae-440e-92a9-333e2e6aad4e.png)
+
+2D卷积两个坐标轴翻转，到第三象限
+
+滤波器：h(m,n) 一个系统的冲击反馈（point spread function）
+
+point spread function：一个点的输入一般result in一个区域，point spread越小分辨率越高
+
+![image](https://user-images.githubusercontent.com/29757093/154564052-8bb8a906-f029-44d1-b060-32f0448dfa15.png)
+
+- 图像M\*N，filter K*L，输出 M+N-1， K+L-1
+- 图像M*N，filter (2k+1, 2k+1)，蓝色和橙色区域取决于padding
+
+![image](https://user-images.githubusercontent.com/29757093/154564909-a85e6421-fa64-4dc4-86c0-ff77f7274c93.png)
