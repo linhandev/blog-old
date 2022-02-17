@@ -138,9 +138,9 @@ Gamma Correction：显示的强度和真实的强度是非线性的
 
 f(m,n)
 
-可分：函数可以表示为两个函数积 $f(m,n)=f_v(m)f_h(n)$，2D矩阵可以表示为两个1D矩阵积
+可分：函数可以表示为两个函数积 $f(m,n)=f_v(m)f_h(n)$，2D矩阵可以表示为两个1D矩阵积(没一行都成比例，每一列都成比例)
 
-函数内积，投影：一个函数*另一个函数的共扼在整个定义域上积分
+函数内积，投影：一个函数乘另一个函数的共扼在整个定义域上积分
 
 $\phi(x,idx)$ 第idx个基底。
 
@@ -160,3 +160,45 @@ $$
 ![inverse transform](/assets/img/post/Note/inverse-transform.png)
 
 ![forier](/assets/img/post/Note/forier.png)
+
+用的是 $2\pi u$ 而不是 $\omega$ ，所以没有 $\frac{1}{2\pi}$
+
+![fourier pair](/assets/img/post/Note/fourier-pair.png)
+
+时域宽，低频信号多，频域窄。时域越宽越接近常数的频率0，频域越接近冲击。频域零点在1/时域方波长度(连续是1/2时域零点，离散是1/N，离散从0开始)
+![sinc](/assets/img/post/Note/sinc.png)
+
+![fourier properties](/assets/img/post/Note/fourier-properties.png)
+时域卷积，频域相乘
+
+时域是实函数，频域性质
+
+![real ft](/assets/img/post/Note/real-ft.png)
+
+2D傅立叶
+
+![2d ft](/assets/img/post/Note/2d-ft.png)
+
+1D单位正交基底相乘得到的2D基底还是单位正交的
+
+![2d frequendy](/assets/img/post/Note/2d-frequendy.png)
+2D信号频率
+- 两个垂直方向的频率：比如x和y方向上单位长度(整幅图)分别 $f_x, f_y$ 周期
+- 频率和角度：角度是频率最高的方向 $atan(\frac{y}{x})$，这个方向上的频率 $f_m$ 是 $\sqrt{f_x^2+f_y^2}$
+
+$F\{f(x)\}=\frac{1}{2j}(\delta(u-f_x,v-f_y)-\delta(u+f_x, v+f_y))$
+![delta 2d](/assets/img/post/Note/delta-2d.png)
+
+![2d ft prop](/assets/img/post/Note/2d-ft-prop.png)
+
+![2d ft prop 1](/assets/img/post/Note/2d-ft-prop-1.png)
+
+可分2D傅立叶：如果f(x, y)可以表示为g(x)*h(y)的形式，用g(x)傅立叶得F(u)，用h(y)傅立叶得F(v)，F(u, v)=F(u)乘F(v)
+
+![2d seperate ft](/assets/img/post/Note/2d-seperate-ft.png)
+
+![2d seperate ft 2](/assets/img/post/Note/2d-seperate-ft-2.png)
+
+2D傅立叶旋转
+
+![2d ft rotate](/assets/img/post/Note/2d-ft-rotate.png)
