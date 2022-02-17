@@ -230,3 +230,12 @@ point spread function：一个点的输入一般result in一个区域，point sp
 - 图像M*N，filter (2k+1, 2k+1)，蓝色和橙色区域取决于padding
 
 ![image](https://user-images.githubusercontent.com/29757093/154564909-a85e6421-fa64-4dc4-86c0-ff77f7274c93.png)
+
+可分滤波器可以在x，y上单独做
+
+![image](https://user-images.githubusercontent.com/29757093/154567418-4bcd6c8a-bebd-4391-9a49-6626ef6ac10d.png)
+
+![image](https://user-images.githubusercontent.com/29757093/154567739-7750ed85-249a-44ed-92e9-657134f94244.png)
+
+![image](https://user-images.githubusercontent.com/29757093/154567903-a7563d93-3f26-418e-8db5-4c38e983fc9c.png)
+
