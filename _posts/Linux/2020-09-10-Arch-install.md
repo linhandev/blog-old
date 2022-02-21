@@ -309,7 +309,6 @@ nodatacow：禁用cow，新数据直接覆盖
 
 ![image](https://user-images.githubusercontent.com/29757093/153567324-e98fb530-8e95-49ab-9517-575f71ff5032.png)
 
-</p>
 </details>
 
 ## 安装Arch
