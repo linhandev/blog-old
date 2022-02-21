@@ -90,6 +90,13 @@ ssh root@[上面ip a看到的ip]
 ```
 </details>
 
+## 校准时间
+```shell
+timedatectl list-timezones # 显示所有时区，按q退出
+timedatectl set-timezone Asia/Shanghai
+timedatectl set-ntp true # 开启联网时间校准
+```
+
 ## 硬盘分区
 硬盘上创建了文件系统才能用。首先检查电脑是不是用了uefi
 ```shell
@@ -417,6 +424,8 @@ passwd ＃ 设置密码
 ```
 
 ## 网络
+todo 简化依赖
+
 前面设置的网络连接只在这次安装过程中生效，还需要给刚装好的系统装联网软件。下面只写基本的连接wifi的部分，DSL，移动网络之类的连接可以参考[这篇详细教程](https://linuxhint.com/arch_linux_network_manager/)
 ```shell
 pacman -S wpa_supplicant wireless_tools networkmanager
@@ -426,21 +435,6 @@ systemctl disable dhcpd.service # 如果说dhcpd not found也没关系，目标�
 systemctl enable wpa_supplicant.service
 ```
 这里就可以重启进入只有命令行的系统了，可以选择现在重启看一下前面的步骤是不是做的有问题，下面的步骤在进入系统后做，或者也可以不重启直接继续装。
-
-## 校准时间
-```shell
-timedatectl list-timezones # 显示所有时区，按q退出
-timedatectl set-timezone Asia/Shanghai
-timedatectl set-ntp true # 开启联网时间校准
-```
-
-## 桌面
-xfce4桌面
-```shell
-pacman -S xorg
-pacman -S xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
-systemctl enable lightdm
-```
 
 ## 添加用户
 一般日常使用不会直接用root账户，创建一个用户帐户。
@@ -454,17 +448,28 @@ permit persist [用户名] as root # 允许 用户名 作为root执行，persist
 mv /usr/bin/sudo /usr/bin/sudo-bk
 ln -s /usr/bin/doas /usr/bin/sudo
 
-ls -lah /home/[用户名] # 检查是不是创建了用户的home目录，如果没有或者用户没有权限访问这个目录会在登录的时候登录成功，但是仍然返回登录界面
-mkdir /home/[用户名]
+mkdir /home/[用户名] 
 chown -R [用户名]:[用户名] /home/[用户名]
 ```
+
+## 桌面
+xfce4桌面
+```shell
+pacman -S xorg
+pacman -S xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+systemctl enable lightdm
+```
+
+有时候新安装桌面可能遇到登录循环的情况，开机后正常输入用户名密码，结果回车登录之后又回到输入密码界面。这种情况可能是因为没有 /home/[用户名] 目录或者用户没有这个目录的权限，参考[添加用户](#添加用户)一节最后两行试一下。
+
 
 安装完成，重启进入系统
 ```shell
 # 按 ctrl+D 退出 chroot
 reboot
 ```
-重启之后应该就能看到一个登陆界面，能登陆进去就是安装成功了！如果安装过程中有任何问题欢迎在下方留言。有关一些常用软件的安装在[下一篇文章](https://linhandev.github.io/posts/Arch-Apps/)中记录。
+
+重启之后应该就能看到一个登陆界面，登陆进去看到桌面就是安装成功了！如果安装过程中有任何问题欢迎在下方留言。有关一些常用软件的安装在[下一篇文章](https://linhandev.github.io/posts/Arch-Apps/)中记录。
 
 
 [//]: # (swap btrfs: truncate -s 0 /swap/swapfile; chattr +C /swap/swapfile; btrfs property set /swap/swapfile compression none; dd if=/dev/zero of=/swap/swapfile bs=1G count=2 status=progress; chmod 600 /swap/swapfile; mkswap /swap/swapfile; swapon /swap/swapfile; vim /etc/fstab； /swap/swapfile none swap defaults 0 0 )
@@ -482,3 +487,5 @@ reboot
 [mdadm+arch](https://www.serveradminz.com/blog/installation-of-arch-linux-using-software-raid/)
 
 [Arch Raid](https://wiki.archlinux.org/title/RAID)
+
+[Arch Linux BTRFS Install](https://www.youtube.com/watch?v=7ituCCKXmMM&t=1143s&ab_channel=EF-LinuxMadeSimple)
