@@ -90,72 +90,14 @@ ssh root@[上面ip a看到的ip]
 ```
 </details>
 
-## Raid
-<details>
-  <summary>可选步骤。软件Raid可以提升一些读写速度</summary>
-
-之前在搜教程的时候看到一个Arch + Raid 0经验贴下面的的[评论](https://forum.level1techs.com/t/arch-linux-install-with-2-nvmes-in-raid-0/147268/2)，笑了一下午。必须放在这 /笑哭
-
-![image](https://user-images.githubusercontent.com/29757093/152065902-cb1b40ca-3005-48c9-9415-0cd39a9e38f4.png)
-
-个人在存储技术方面可以说没有任何经验，下面的背景部分只是记录一些自己在调研过程中的理解和想法。
-
-基础的软件Raid大概有两条路线，一种是基本的ext4文件系统+软件Raid+逻辑卷管理，另一种是直接用zfs，btfs这种带Raid支持的文件系统。就我的在2块SSD的笔记本上加快读写速度的场景下似乎第一种更合适。
-
-网上冲浪的过程中感觉btfs风评极差，在Raid这种追求持续在线和稳定的用例下开发团队似乎并不重视软件质量。评价用btfs不是会不会丢数据的问题，只是什么时候丢数据。zfs功能很多，除了自带Raid以外copy on write带来的灵活创建备份点和快速格式化很大的存储听起来很有用。不过不是做NAS盘比较小ext4还能应付，我也没有备份系统的习惯最多备份文件，所以功能上二者没有决定性的差别。而且因为开源协议的问题zfs不能合进linux内核，自己做iso比较耗时间。综上选了第一条路线。
-
-Raid的实现分为三大类：硬件Raid，软件Raid和主板Raid(fakeraid)。硬Raid用专门的芯片和独立于uefi的固件实现，性能最好，对主板固件和操作系统来说一个硬Raid的阵列就是一块盘。软件Raid和fakeraid都依赖CPU进行运算，理论上性能差别不是很大，一般没有硬件Raid就会采用软件Raid，fakeraid没人推荐。Raid有多种级别，具体可以参考[这篇](https://www.prepressure.com/library/technology/raid)。笔记本大概就是Raid 0 和 Raid 1,主要着眼提速，Raid 0 用一倍的故障率换速度，Raid 1 用一半的空间换容错。我做的是Raid 0不过其他级别流程上区别不大。
-
-做Raid要分区，因为就算一个厂商一个型号的盘大小也会有一些不同。如果阵列有容错，换盘的时候软件Raid要求换进来的盘和之前的盘大小完全相同。如果直接用整块盘做Raid，之前的盘还偏大就很不巧了。
-
-做Arch至少要两个，一般有三个分区，分别是uefi，主分区和可选的swap。软件Raid依赖操作系统，而uefi分区在进操作系统之前就要用，所以这个分区要么不Raid要么Raid 1。linux支持多个swap，如果有两个swap在两个盘上默认就会用类似Raid 0的方式读写，所以swap也没必要放进Raid。这样就只需要给系统分区做Raid。如果继续对系统分区细分，只想对存数据的部分进行Raid安装过程和不配Raid完全相同。系统做完之后配Raid挂载就可以。
-
-废话结束，综上我的两块SSD Raid 0分区布局如下
-- SSD 1
-  - UEFI分区：512M
-  - 系统分区：剩下的空间取个整数
-  - swap分区： 1/2 swap大小
-- SSD 2
-  - 系统分区：和SSD 1上的系统分区一样大
-  - swap分区： 1/2 swap大小
-
-格盘的细节参考下一节，记一下mdadm的内容
-
-```shell
-# 删除旧记录
-mdadm --misc --zero-superblock /dev/drive
-
-# 创建Raid 0
-mdadm --create /dev/md0 --level=stripe --raid-devices=2 /dev/drive[1-2]
-# 或者盘分开写
-mdadm --create /dev/md0 --level=stripe --raid-devices=2 /dev/drive1 /dev/drive2
-
-# 查看mdadm运行状态，raid细节
-cat /proc/mdstat
-mdadm -E /dev/drive[1-2]
-mdadm --detail /dev/md0
-
-```
-
-Raid做完之后如下步骤，替换成自己的设备文件
-1. 在分区1上 `mkfs.fat -F32 /dev/[uefi分区]`
-2. 在分区3和5上分别 `mkswap /dev/[swap分区]`
-3. `swapon /dev/[SSD 1上的swap分区] /dev/[SSD 2上的swap分区]`
-4. 在md0里创建一个ext4分区，`mkfs.ext4 /dev/raid 0里的分区`，后面mount的时候也mount这个分区
-
-Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和之后还有几行命令需要执行。
-</details>
-
 ## 硬盘分区
-[//]: # (TODO: gparted)
-
-硬盘上创建了文件系统才能用。首先看看电脑是不是用了uefi
+硬盘上创建了文件系统才能用。首先检查电脑是不是用了uefi
 ```shell
 ls /sys/firmware/efi/efivars
 ```
 如果说没有这个路径那就是没用uefi，下面分区的时候跳过uefi分区的部分。如果出了一堆文件就是用了uefi，需要做一个uefi分区。
 
-除了uefi分区至少还需要一个root分区，一般还会做一个swap。一些特殊用途的系统比如服务器可能/srv或者/var下会存巨多的文件，这样可以给这个路径单开一个分区放到一个比较大的盘上。这个教程就做三个分区：uefi，root和swap。如果想给一些路径单独做分区和做root分区的过程相同。
+除了uefi分区至少还需要一个root分区，一般还会做一个swap。一些特殊用途的系统比如服务器可能/srv或者/var下会存巨多的文件，这样可以给这个路径单开一个分区放到一个比较大的盘上，这个过程和做root分区是相同的。这个教程就做三个分区：uefi，root和swap。
 
 ```shell
 lsblk # 查看机器硬盘情况
@@ -229,26 +171,82 @@ lsblk # 再次查看分区情况
 
 之后需要在分区上创建文件系统
 ```shell
-# 没有uefi分区跳过这行
-mkfs.fat -F32 /dev/[uefi分区]
+mkfs.fat -F32 /dev/[uefi分区] # 没有uefi分区跳过这行
 mkswap /dev/[swap分区]
-swapon /dev/[swap分区] # 可以写多个swap分区，比如 swapon /dev/nvme0n1p2 /dev/nvme1n1p3
+swapon /dev/[swap分区] 
+# swapon 也可以写多个swap分区，比如 swapon /dev/nvme0n1p2 /dev/nvme1n1p3，这样多个swap分区应该会像raid 0一样做stripping加快速度
 ```
-主分区文件系统有三种选择，绝大多数情况下ext4是最好的，如果想提升读写速度可以做前面的[软件raid](#raid)，如果想要snapshot功能可以用btrfs
+主分区文件系统有三种选择，绝大多数情况下最简单的ext4是最合适的，跑下面这一行之后直接到[安装Arch](#安装Arch)一节就可以。
 ```shell
 mkfs.ext4 /dev/[主分区]
 ```
+如果想提升一点读写速度可以做[软件raid](#raid)，如果想要snapshot功能可以用[btrfs](#btrfs)文件系统。
 
-<details><summary>Btrfs</summary>
-<p>
+## Raid
+<details>
+  <summary>可选步骤。软件Raid可以提升一些读写速度</summary>
 
-## btrfs
-可选步骤，btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，一个文件系统可以提供传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评极差，但是zfs因为开源协议问题不能合入linux内核，安装过程比btrfs麻烦很多。
+之前在搜教程的时候看到一个Arch + Raid 0经验贴下面的的[评论](https://forum.level1techs.com/t/arch-linux-install-with-2-nvmes-in-raid-0/147268/2)，笑了一下午。必须放在这 /笑哭
+
+![image](https://user-images.githubusercontent.com/29757093/152065902-cb1b40ca-3005-48c9-9415-0cd39a9e38f4.png)
+
+个人在存储技术方面可以说没有任何经验，下面的背景部分只是记录一些自己在调研过程中的理解和想法。
+
+基础的软件Raid大概有两条路线，一种是基本的ext4文件系统+软件Raid+逻辑卷管理，另一种是直接用zfs，btfs这种带Raid支持的文件系统。就我的在2块SSD的笔记本上加快读写速度的场景下似乎第一种更合适。
+
+网上冲浪的过程中感觉btfs风评极差，在Raid这种追求持续在线和稳定的用例下开发团队似乎并不重视软件质量。评价用btfs不是会不会丢数据的问题，只是什么时候丢数据。zfs功能很多，除了自带Raid以外copy on write带来的灵活创建备份点和快速格式化很大的存储听起来很有用。不过不是做NAS盘比较小ext4还能应付，我也没有备份系统的习惯最多备份文件，所以功能上二者没有决定性的差别。而且因为开源协议的问题zfs不能合进linux内核，自己做iso比较耗时间。综上选了第一条路线。
+
+Raid的实现分为三大类：硬件Raid，软件Raid和主板Raid(fakeraid)。硬Raid用专门的芯片和独立于uefi的固件实现，性能最好，对主板固件和操作系统来说一个硬Raid的阵列就是一块盘。软件Raid和fakeraid都依赖CPU进行运算，理论上性能差别不是很大，一般没有硬件Raid就会采用软件Raid，fakeraid没人推荐。Raid有多种级别，具体可以参考[这篇](https://www.prepressure.com/library/technology/raid)。笔记本大概就是Raid 0 和 Raid 1,主要着眼提速，Raid 0 用一倍的故障率换速度，Raid 1 用一半的空间换容错。我做的是Raid 0不过其他级别流程上区别不大。
+
+做Raid要分区，因为就算一个厂商一个型号的盘大小也会有一些不同。如果阵列有容错，换盘的时候软件Raid要求换进来的盘和之前的盘大小完全相同。如果直接用整块盘做Raid，之前的盘还偏大就很不巧了。
+
+做Arch至少要两个，一般有三个分区，分别是uefi，主分区和可选的swap。软件Raid依赖操作系统，而uefi分区在进操作系统之前就要用，所以这个分区要么不Raid要么Raid 1。linux支持多个swap，如果有两个swap在两个盘上默认就会用类似Raid 0的方式读写，所以swap也没必要放进Raid。这样就只需要给系统分区做Raid。如果继续对系统分区细分，只想对存数据的部分进行Raid安装过程和不配Raid完全相同。系统做完之后配Raid挂载就可以。
+
+废话结束，综上我的两块SSD Raid 0分区布局如下
+- SSD 1
+  - UEFI分区：512M
+  - 系统分区：剩下的空间取个整数
+  - swap分区： 1/2 swap大小
+- SSD 2
+  - 系统分区：和SSD 1上的系统分区一样大
+  - swap分区： 1/2 swap大小
+
+格盘的细节参考下一节，记一下mdadm的内容
 
 ```shell
-mkfs.btrfs /dev/主分区
+# 删除旧记录
+mdadm --misc --zero-superblock /dev/drive
+
+# 创建Raid 0
+mdadm --create /dev/md0 --level=stripe --raid-devices=2 /dev/drive[1-2]
+# 或者盘分开写
+mdadm --create /dev/md0 --level=stripe --raid-devices=2 /dev/drive1 /dev/drive2
+
+# 查看mdadm运行状态，raid细节
+cat /proc/mdstat
+mdadm -E /dev/drive[1-2]
+mdadm --detail /dev/md0
+
 ```
-btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，官方给的一些常用例子
+
+Raid做完之后如下步骤，替换成自己的设备文件
+1. 在分区1上 `mkfs.fat -F32 /dev/[uefi分区]`
+2. 在分区3和5上分别 `mkswap /dev/[swap分区]`
+3. `swapon /dev/[SSD 1上的swap分区] /dev/[SSD 2上的swap分区]`
+4. 在md0里创建一个ext4分区，`mkfs.ext4 /dev/raid 0里的分区`，后面mount的时候也mount这个分区
+
+Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和之后还有几行命令需要执行。
+</details>
+
+## btrfs
+<details>
+  <summary>可选步骤。Btrfs提供raid和快照功能，做起来比较复杂不推荐新手用</summary>
+
+btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，在文件系统级别融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评极差，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。
+
+我只把btrfs用在root分区上，uefi和swap分区还是正常做，步骤参考下一节。
+
+类似逻辑卷，btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，下面是官方给的一些常用例子
 
 ```shell
 # Create a filesystem across four drives (metadata mirrored, linear data allocation)
@@ -263,6 +261,7 @@ mkfs.btrfs -m raid10 -d raid10 /dev/sdb /dev/sdc /dev/sdd /dev/sde
 # Don't duplicate metadata on a single drive (default on single SSDs)
 mkfs.btrfs -m single /dev/sdb
 ```
+
 比如我做的两块盘raid
 
 ![image](https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png)
@@ -305,10 +304,10 @@ nodatacow：禁用cow，新数据直接覆盖
 
 </p>
 </details>
-<br>
 
+## 安装Arch
 
-下一步需要联网安装软件，选一个快的镜像可以节省很多时间
+安装需要联网下载，选一个快的镜像可以节省很多时间
 ```shell
 pacman -Syy # 更新pacman数据库
 pacman -S reflector
@@ -316,28 +315,38 @@ cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bk # 备份镜像列表
 reflector -c "CN" -l 20 -n 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
-## 安装Arch
 [//]: # (TODO: ucode)
-ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-ucode或amd-ucode
 
 ```shell
-mount /dev/[主分区] /mnt
-pacstrap /mnt base linux linux-firmware vim base-devel opendoas [intel/amd]-ucode # 如果装btrfs加上btrfs-progs
+mount /dev/[主分区] /mnt # 挂载主分区
+pacstrap /mnt base linux linux-firmware vim base-devel opendoas
+pacstrap [intel/amd]-ucode # ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-ucode或amd-ucode 
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 ```
 
-不做Raid跳过下面这行，把mdadm配置写入文件
+<details>
+  <summary>btrfs</summary>
+```shell
+pacstrap /mnt btrfs-progs
+```
+</details>
+
+<details>
+  <summary>Raid</summary>
+把mdadm配置写入文件
 ```shell
 mdadm --detail --scan >> /mnt/etc/mdadm.conf
-```
+```  
+</details>
 
 切换到新装好的系统
 ```shell
 arch-chroot /mnt
 ```
-
-依旧是不做Raid跳过，在新系统里装mdadm，和修改一个配置文件。Raid所有配置完成，下面正常安装就行。
+<details>
+  <summary>Raid</summary>
+在新系统里装mdadm，和修改一个配置文件。Raid所有配置完成，下面正常安装就行。
 ```shell
 pacman -S mdadm
 
@@ -346,6 +355,7 @@ HOOKS=(base udev autodetect keyboard modconf block mdadm_udev filesystems fsck) 
 
 mkinitcpio -p linux
 ```
+</details>
 
 ## 语言
 ```shell
