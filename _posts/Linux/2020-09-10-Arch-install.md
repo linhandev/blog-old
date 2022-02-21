@@ -9,16 +9,28 @@ tags:
 pin: true
 ---
 
-Arch是一个十分干净简洁的Linux发行版，日常使用占的硬件资源很少也很流畅。滚动更新方式意味着安装之后只需要更新，不需要费劲升级系统，感觉很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容甚至一些基于Arch发行版用户(比如Manjaro)都用的上。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。
+Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容甚至一些基于Arch发行版用户(比如Manjaro)都用的上。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。
+
+所有折叠的块都是可选步骤，主要有ssh连接，mdadm raid和btrfs文件系统，不需要的话直接跳过。
+
+<details>
+<summary>折叠块长这样</summary>
+  折叠起来的都是可选步骤，不需要直接跳过
+</details>
 
 # 硬件需求
+- CPU：x86架构，绝大多数电脑都是
 - RAM：512M以上
 - 硬盘：2G以上
 - 网：插网线比较简单，wifi也可
-- U盘：做虚拟机不需要。大概8G就够用，读写速度主要影响做启动盘的时间，安装过程联网下载很多，从U盘中读写比较少
+- U盘：做虚拟机不需要。8G肯定够用，镜像不到1G。读写速度主要影响做启动盘的时间，安装过程联网下载比较多，从U盘中读写比较少
 
 # iso
-[Arch官方镜像列表](https://archlinux.org/download/)里有所有的iso下载地址，国内从[清华源](https://mirrors.tuna.tsinghua.edu.cn/)下一般比较快。文件名是 `archlinux-年月日-x86_64.iso` 如果是做虚拟机不需要启动盘，直接用iso就行。如果在物理机器上装，[Etcher](https://www.balena.io/etcher/)非常适合做任何Linux Distro的安装盘，使用简单而且一般都是一次成功。选盘的时候注意别选错了，否则可能把正在用的盘格掉。即使手上有之前的安装盘也建议做一个新的，之前遇到过用一个月之前的安装盘进行安装，出了一些软件兼容的小问题，用最新的镜像可以避免麻烦。
+[Arch官方镜像列表](https://archlinux.org/download/)里有所有的iso下载地址，国内从[清华源](https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/2022.02.01/)下一般比较快。文件名是 `archlinux-年月日-x86_64.iso`，蓝色那行
+
+![image](https://user-images.githubusercontent.com/29757093/155031388-1a5cadcc-135c-4831-bb24-53e2defbbf89.png)
+
+做虚拟机不需要做启动盘，直接用iso。在物理机器上装，[Etcher](https://www.balena.io/etcher/)非常适合做任何Linux Distro的安装盘。使用简单，一般一次成功。选盘的时候注意，别选错了！！！否则可能把正在用的盘格掉。Etcher一般会把不像U盘的设备折叠起来，仔细看一眼肯定不至于选错。即使手上有之前的启动盘也建议做一个新的，Arch更新比较频繁，用旧的启动盘可能会出一些软件兼容的小问题，用最新的镜像可以避免麻烦。
 
 # 开始安装
 插入做好的启动盘，重启电脑选择U盘作为启动媒体，一般是按F1，F2, F5，F10，F12中的一个键。启动后选择Arch Linux install medium。
@@ -28,6 +40,9 @@ Arch是一个十分干净简洁的Linux发行版，日常使用占的硬件资�
 之后会进到一个命令行，开头的提示符是root@archiso，如下
 
 ![image](https://user-images.githubusercontent.com/29757093/139161941-9e1e6abc-4e50-4797-b15d-8216001e2866.png)
+
+# 键位
+国内的键盘一般都不需要改键位，需要可以参考[官方教程](https://wiki.archlinux.org/title/installation_guide#Set_the_console_keyboard_layout)
 
 [//]: # (TODO: 键位 localctl list-keymaps | grep ..; loadkeys ...)
 
@@ -41,25 +56,29 @@ ping baidu.com
 
 ![image](https://user-images.githubusercontent.com/29757093/139162328-17fe7acf-ddf2-4c69-a537-e9afaba1e19d.png)
 
-如果有网线直接插上是最简单的方法，不需要进行额外操作。Arch推荐用[iwctl]连wifi(https://wiki.archlinux.org/title/Iwd#Connect_to_a_network)。
+直接插网线最简单，不需要进行额外操作。连wifi Arch推荐用[iwctl](https://wiki.archlinux.org/title/Iwd#Connect_to_a_network)。
 ```shell
-iwctl device list
-ip link set wlan0 up # 先打开硬件，关闭硬件是down
+iwctl device list # 列出所有网络接口
+ip link set [网络接口] up # 我的叫 wlan0。先打开硬件，关闭硬件是down
 iwctl # 进入iwctl
-device list # 列出所有网络设备，一般会有一个lo是环回的，不是这个。需要用的设备大概叫wlan0
-station wlan0 scan
-station wlan0 get-networks # 获取所有wifi
-station wlan0 connect [wifi name] # 之后输密码
+device list # 列出所有网络接口，一般会有一个lo是环回的，不是这个。需要用的设备大概叫wlan0
+station [网络接口] scan
+station [网络接口] get-networks # 获取所有wifi
+station [网络接口] connect [wifi name] # 之后输密码
 quit # 退出iwctl
 ```
 连接完成重新ping一下，这时候应该看到能ping通。
 
-连接8021x校园网[1](https://unix.stackexchange.com/questions/145366/how-to-connect-to-an-802-1x-wireless-network-via-nmcli/334675) [2](https://www.reddit.com/r/archlinux/comments/pb3r0f/cannot_connect_to_college_wifi_using/)
-
 ![image](https://user-images.githubusercontent.com/29757093/139162642-68f2027f-d4cb-4e5f-9689-c36443c51323.png)
 
+连接8021x校园网[1](https://unix.stackexchange.com/questions/145366/how-to-connect-to-an-802-1x-wireless-network-via-nmcli/334675) [2](https://www.reddit.com/r/archlinux/comments/pb3r0f/cannot_connect_to_college_wifi_using/)
+
 ## ssh
-可选步骤。命令行的live系统不能复制，一些命令手打比较麻烦。可以考虑用另一台机器ssh到要安装的机器上，比较方便。
+<details>
+  <summary>可选步骤。用另一台电脑ssh到正在装的电脑上可以复制命令，方便一点</summary>
+
+启动盘的live系统不能复制，一些命令手打比较麻烦。可以考虑用另一台机器ssh到要安装的机器上，方便一点。
+
 ```shell
 pacman -Syy openssh # 安装ssh
 systemctl start sshd # 启动ssh服务
@@ -69,9 +88,11 @@ ip a # 查看机器ip
 # 在另一台机器上
 ssh root@[上面ip a看到的ip]
 ```
+</details>
 
 ## Raid
-可选步骤，可以直接跳到[下一部分](#磁盘分区)。
+<details>
+  <summary>可选步骤。软件Raid可以提升一些读写速度</summary>
 
 之前在搜教程的时候看到一个Arch + Raid 0经验贴下面的的[评论](https://forum.level1techs.com/t/arch-linux-install-with-2-nvmes-in-raid-0/147268/2)，笑了一下午。必须放在这 /笑哭
 
@@ -123,20 +144,21 @@ Raid做完之后如下步骤，替换成自己的设备文件
 4. 在md0里创建一个ext4分区，`mkfs.ext4 /dev/raid 0里的分区`，后面mount的时候也mount这个分区
 
 Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和之后还有几行命令需要执行。
+</details>
 
-## 磁盘分区
+## 硬盘分区
 [//]: # (TODO: gparted)
 
-首先看看电脑是不是用了uefi
+硬盘上创建了文件系统才能用。首先看看电脑是不是用了uefi
 ```shell
 ls /sys/firmware/efi/efivars
 ```
-
 如果说没有这个路径那就是没用uefi，下面分区的时候跳过uefi分区的部分。如果出了一堆文件就是用了uefi，需要做一个uefi分区。
 
-除了uefi分区至少还需要一个root分区，一般还会做一个swap。一些特殊用途的系统比如服务器可能/srv或者/var下会存巨多的文件，这样可以给这个路径单开一个分区放到一个比较大的盘上。这个教程就做三个分区：uefi，root和swap。
+除了uefi分区至少还需要一个root分区，一般还会做一个swap。一些特殊用途的系统比如服务器可能/srv或者/var下会存巨多的文件，这样可以给这个路径单开一个分区放到一个比较大的盘上。这个教程就做三个分区：uefi，root和swap。如果想给一些路径单独做分区和做root分区的过程相同。
+
 ```shell
-lsblk # 查看机器存储硬件情况
+lsblk # 查看机器硬盘情况
 ```
 
 ![image](https://user-images.githubusercontent.com/29757093/153557189-0d2d5652-8e60-46ba-b131-30a88af07957.png)
@@ -145,12 +167,13 @@ lsblk # 查看机器存储硬件情况
 
 进入gdisk开始创建分区
 ```shell
-gdisk /dev/盘号 # 注意这块就写到盘，不要写到分区p1p2这种的
+gdisk /dev/[盘号] # 注意这块就写到盘，不要写到分区p1p2这种的
 ```
+
 ![image](https://user-images.githubusercontent.com/29757093/153557435-8e429654-fb00-438a-a823-20fa5acae7cb.png)
 
 ```shell
-d # 删除一个分区，多次执行直到提示没有分区
+d # 之后打一个数字分区号删除它，多次执行直到提示没有分区
 ```
 
 ![image](https://user-images.githubusercontent.com/29757093/153557471-6bd00602-e2d6-411b-8080-bf5704277e4b.png)
