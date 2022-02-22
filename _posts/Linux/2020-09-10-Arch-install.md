@@ -41,7 +41,7 @@ Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十�
 
 ![image](https://user-images.githubusercontent.com/29757093/139161941-9e1e6abc-4e50-4797-b15d-8216001e2866.png)
 
-todo live字体
+todo live字体 terminus font
 ```shell
 setfont ter-132n
 ```
@@ -102,6 +102,7 @@ ssh root@[上面ip a看到的ip]
 # timedatectl list-timezones # 显示所有时区，按q退出
 timedatectl set-timezone Asia/Shanghai
 timedatectl set-ntp true # 开启联网时间校准
+hwclock --systohc
 ```
 
 ## 硬盘分区
@@ -285,7 +286,8 @@ mkfs.ext4 /dev/[主分区]
   挂载btrfs分区，创建子卷
 
   ```shell
-  mount /dev/[btrfs的任意一个分区] /mnt
+  part_name=[btrfs的任意一个分区名字]
+  mount /dev/${part_name} /mnt
   btrfs su cr /mnt/@root
   btrfs su cr /mnt/@home
   btrfs su cr /mnt/@var # 一般放可变长度的文件，比如log，临时cache和数据库
@@ -299,7 +301,6 @@ mkfs.ext4 /dev/[主分区]
   挂载子卷
   ```shell
   umount /mnt
-  part_name=[btrfs的任意一个分区名字]
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@root /dev/${part_name} /mnt
   mkdir /mnt/{home,var,srv,opt,tmp,swap,.snapshots}
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@home /dev/${part_name} /mnt/home
@@ -329,10 +330,15 @@ cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bk # 备份镜像列表
 reflector -c "CN" -l 20 -n 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
+todo 检查
+bash-completion
+
+![image](https://user-images.githubusercontent.com/29757093/155212372-31f34bc2-dfac-49f4-9c06-e36867f9082c.png)
+
 
 ```shell
 mount /dev/[主分区] /mnt # 挂载主分区
-pacstrap /mnt base linux linux-firmware linux-headers vim base-devel opendoas grub efibootmgr
+pacstrap /mnt base linux linux-firmware linux-headers vim base-devel opendoas grub efibootmgr git
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 ```
@@ -352,6 +358,10 @@ cat /mnt/etc/fstab
   
   ```shell
   pacstrap /mnt btrfs-progs grub-btrfs
+  
+  vim /etc/mkinitcpio.conf 
+  # MODULES=(btrfs)
+  mkinitcpio -p linux
   ```
   
 </details>
@@ -495,7 +505,6 @@ reboot
 
 重启之后应该就能看到一个登陆界面，登陆进去看到桌面就是安装成功了！如果安装过程中有任何问题欢迎在下方留言。有关一些常用软件的安装在[下一篇文章](https://linhandev.github.io/posts/Arch-Apps/)中记录。
 
-hwclock --systohc
 
 [//]: # (swap btrfs: truncate -s 0 /swap/swapfile; chattr +C /swap/swapfile; btrfs property set /swap/swapfile compression none; dd if=/dev/zero of=/swap/swapfile bs=1G count=2 status=progress; chmod 600 /swap/swapfile; mkswap /swap/swapfile; swapon /swap/swapfile; vim /etc/fstab； /swap/swapfile none swap defaults 0 0 )
 
