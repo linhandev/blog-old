@@ -421,7 +421,7 @@ echo "
 127.0.0.1 localhost
 ::1 localhost
 127.0.0.1 ${hostname}.localdomail ${hostname}
-"
+" >> /etc/hosts
 ```
 
 ## 安装grub
