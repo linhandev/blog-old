@@ -354,6 +354,7 @@ arch-chroot /mnt
 <details>
   <summary>Raid</summary>
   在新系统里装mdadm，和修改一个配置文件。Raid所有配置完成，下面正常安装就行。
+ 
   ```shell
   pacman -S mdadm
 
@@ -362,6 +363,7 @@ arch-chroot /mnt
 
   mkinitcpio -p linux
   ```
+  
 </details>
 
 ## 语言
