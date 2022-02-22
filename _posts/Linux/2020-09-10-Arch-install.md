@@ -360,8 +360,8 @@ arch-chroot /mnt
   vim /etc/mkinitcpio.conf 
   # MODULES=(btrfs)
   mkinitcpio -p linux
-  ```
   systemctl enable fstrim.timer
+  ```
 
 </details>
 
