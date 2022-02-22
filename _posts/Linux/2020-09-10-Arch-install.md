@@ -425,7 +425,6 @@ passwd ＃ 设置密码
 ```
 
 ## 网络
-todo 简化依赖
 
 前面设置的网络连接只在这次安装过程中生效，还需要给刚装好的系统装联网软件。下面只写基本的连接wifi的部分，DSL，移动网络之类的连接可以参考[这篇详细教程](https://linuxhint.com/arch_linux_network_manager/)
 ```shell
