@@ -41,8 +41,17 @@ Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十�
 
 ![image](https://user-images.githubusercontent.com/29757093/139161941-9e1e6abc-4e50-4797-b15d-8216001e2866.png)
 
+todo live字体
+```shell
+setfont ter-132n
+```
+
 # 键位
 国内的键盘一般都不需要改键位，如果需要可以参考[官方教程](https://wiki.archlinux.org/title/installation_guide#Set_the_console_keyboard_layout)
+```shell
+locale-ctl list-keymaps | grep [键盘布局缩写]
+loadkeys [键盘布局名]
+```
 
 ## 联网
 安装过程中需要联网下软件。可以ping一个网站检查网络连接
@@ -448,36 +457,13 @@ ln -s /usr/bin/doas /usr/bin/sudo
 passwd ${username} # 设置新用户密码
 ```
 
+## 桌面
 <details>
   <summary>Btrfs snapshot</summary>
-
-  ```shell
-  exit
-  reboot # snapper 默认需要dbus，重启比较方便
-  pacman -S snapper
-  umount /.snapshots
-  rm -rf /.snapshots
-  snapper -c root create-config /
-  vim /etc/snapper/configs/root
-  # ALLOW_USERS='[用户名]'
-  # 最后的期限限制
-  chmod a+rx /.snapshots
-
-  systemctl start snapper-timeline.timer
-  systemctl enable snapper-timeline.timer
-  systemctl start snapper-cleanup.timer
-  systemctl enable snapper-cleanup.timer
-  systemctl start grub-btrfs.path
-  systemctl enable grub-btrfs.path
-
-  snapper -c root list
-  snapper -c root create --description BeforeGui
-  ```
+  桌面会装很多包，如果用了btrfs，可以在安装桌面之前做一下snapshot。详细步骤参考[这里]()
 </details>
 
-## 桌面
 ### xfce4
-
 ```shell
 pacman -S xorg xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 systemctl enable lightdm
