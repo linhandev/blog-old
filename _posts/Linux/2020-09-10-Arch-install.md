@@ -284,7 +284,7 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
   btrfs su cr /mnt/@opt # 第三方软件
   btrfs su cr /mnt/@tmp # 临时文件和cache
   btrfs su cr /mnt/@swap # swap文件推荐放进单独的子卷
-  btrfs su cr /mnt/@.snapshot
+  btrfs su cr /mnt/@.snapshots
   ```
 
   挂载子卷
@@ -292,12 +292,12 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
   umount /mnt
   part_name=[btrfs的任意一个分区名字]
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@root /dev/${part_name} /mnt
-  mkdir /mnt/{home,var,srv,opt,tmp,swap,.snapshot}
+  mkdir /mnt/{home,var,srv,opt,tmp,swap,.snapshots}
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@home /dev/${part_name} /mnt/home
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@srv /dev/${part_name} /mnt/srv
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@tmp /dev/${part_name} /mnt/tmp
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@opt /dev/${part_name} /mnt/opt
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshot /dev/${part_name} /mnt/.snapshot
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
   mount -o nodatacow,subvol=@swap /dev/${part_name} /mnt/swap
   mount -o nodatacow,subvol=@var /dev/${part_name} /mnt/var
   ```
