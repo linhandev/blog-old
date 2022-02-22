@@ -458,7 +458,7 @@ passwd ${username} # 设置新用户密码
   umount /.snapshots
   rm -rf /.snapshots
   snapper -c root create-config /
-  vi /etc/snapper/configs/root
+  vim /etc/snapper/configs/root
   # ALLOW_USERS='[用户名]'
   # 最后的期限限制
   chmod a+rx /.snapshots
