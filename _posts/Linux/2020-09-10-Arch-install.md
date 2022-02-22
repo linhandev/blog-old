@@ -347,11 +347,15 @@ cat /mnt/etc/fstab
   
 </details>
 
+切换到新装好的系统
+```shell
+arch-chroot /mnt
+```
 <details>
   <summary>btrfs</summary>
   
   ```shell
-  pacstrap /mnt btrfs-progs grub-btrfs
+  pacman -S btrfs-progs grub-btrfs
   
   vim /etc/mkinitcpio.conf 
   # MODULES=(btrfs)
@@ -361,10 +365,6 @@ cat /mnt/etc/fstab
 
 </details>
 
-切换到新装好的系统
-```shell
-arch-chroot /mnt
-```
 <details>
   <summary>Raid</summary>
   在新系统里装mdadm，和修改一个配置文件。Raid所有配置完成，下面正常安装就行。
