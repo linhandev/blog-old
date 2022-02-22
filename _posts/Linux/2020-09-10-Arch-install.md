@@ -342,9 +342,11 @@ mdadm --detail --scan >> /mnt/etc/mdadm.conf
 
 <details>
   <summary>btrfs</summary>
-```shell
-pacstrap /mnt btrfs-progs grub-btrfs
-```
+  
+  ```shell
+  pacstrap /mnt btrfs-progs grub-btrfs
+  ```
+  
 </details>
 
 切换到新装好的系统
