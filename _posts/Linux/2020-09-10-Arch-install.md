@@ -288,12 +288,11 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
   ```
 
   挂载子卷
-  [//]: # (TODO: cannot disable free space tree space_cache)
   ```shell
   umount /mnt
   part_name=[btrfs的任意一个分区名字]
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@root /dev/${part_name} /mnt
-  mkdir /mnt/{boot,home,var,srv,opt,tmp,swap,.snapshot}
+  mkdir /mnt/{home,var,srv,opt,tmp,swap,.snapshot}
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@home /dev/${part_name} /mnt/home
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@srv /dev/${part_name} /mnt/srv
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@tmp /dev/${part_name} /mnt/tmp
@@ -301,7 +300,6 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshot /dev/${part_name} /mnt/.snapshot
   mount -o nodatacow,subvol=@swap /dev/${part_name} /mnt/swap
   mount -o nodatacow,subvol=@var /dev/${part_name} /mnt/var
-  mount /dev/[uefi分区] /mnt/boot
   ```
   - noatime： 不写accesstime
   - compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
