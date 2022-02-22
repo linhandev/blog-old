@@ -249,7 +249,7 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
 <details>
   <summary>可选步骤。Btrfs提供raid和快照功能，做起来比较复杂不推荐新手用</summary>
 
-btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，在文件系统级别融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评极差，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。
+  btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，在文件系统级别融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评极差，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。
 
 我只把btrfs用在root分区上，uefi和swap分区还是正常做，步骤参考下一节。
 
@@ -325,7 +325,7 @@ reflector -c "CN" -l 20 -n 10 --sort rate --save /etc/pacman.d/mirrorlist
 
 ```shell
 mount /dev/[主分区] /mnt # 挂载主分区
-pacstrap /mnt base linux linux-firmware vim base-devel opendoas
+pacstrap /mnt base linux linux-firmware linux-headers vim base-devel opendoas grub efibootmgr
 pacstrap [intel/amd]-ucode # ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-ucode或amd-ucode 
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
@@ -334,7 +334,7 @@ cat /mnt/etc/fstab
 <details>
   <summary>btrfs</summary>
 ```shell
-pacstrap /mnt btrfs-progs
+pacstrap /mnt btrfs-progs grub-btrfs
 ```
 </details>
 
@@ -404,7 +404,6 @@ vim /etc/hosts
 ## 安装grub
 uefi系统
 ```shell
-pacman -S grub efibootmgr
 mkdir /boot/efi
 mount /dev/[uefi分区] /boot/efi
 grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi # 注意那个x是小写的
@@ -427,8 +426,8 @@ todo 简化依赖
 
 前面设置的网络连接只在这次安装过程中生效，还需要给刚装好的系统装联网软件。下面只写基本的连接wifi的部分，DSL，移动网络之类的连接可以参考[这篇详细教程](https://linuxhint.com/arch_linux_network_manager/)
 ```shell
-pacman -S wpa_supplicant wireless_tools networkmanager
-pacman -S nm-connection-editor network-manager-applet
+pacman -S wpa_supplicant wireless_tools networkmanager network-manager-applet
+pacman -S nm-connection-editor 
 systemctl enable NetworkManager.service
 systemctl disable dhcpd.service # 如果说dhcpd not found也没关系，目标就是把他关了
 systemctl enable wpa_supplicant.service
@@ -438,7 +437,7 @@ systemctl enable wpa_supplicant.service
 ## 添加用户
 一般日常使用不会直接用root账户，创建一个用户帐户。
 ```shell
-useradd [用户名]
+useradd -m [用户名]
 passwd [用户名] # 设置新用户密码
 vim /etc/doas.conf
 # 添加一行
@@ -446,10 +445,30 @@ permit persist [用户名] as root # 允许 用户名 作为root执行，persist
 # :wq! 保存并退出
 mv /usr/bin/sudo /usr/bin/sudo-bk
 ln -s /usr/bin/doas /usr/bin/sudo
-
-mkdir /home/[用户名] 
-chown -R [用户名]:[用户名] /home/[用户名]
 ```
+
+<details><summary>Btrfs snapshot</summary>
+
+```shell
+umount /.snapshots
+rm -rf /.snapshots
+snapper -c root create-config /
+vi /etc/snapper/configs/root
+# ALLOW_USERS='[用户名]'
+# 最后的期限限制
+chmod a+rx /.snapshots
+ 
+systemctl start snapper-timeline.timer
+systemctl enable snapper-timeline.timer
+systemctl start snapper-cleanup.timer
+systemctl enable snapper-cleanup.timer
+systemctl start grub-btrfs.path
+systemctl enable grub-btrfs.path
+
+snapper -c root list
+snapper -c root create --description BeforeGui
+```
+</details>
 
 ## 桌面
 xfce4桌面
@@ -459,8 +478,11 @@ pacman -S xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-se
 systemctl enable lightdm
 ```
 
-有时候新安装桌面可能遇到登录循环的情况，开机后正常输入用户名密码，结果回车登录之后又回到输入密码界面。这种情况可能是因为没有 /home/[用户名] 目录或者用户没有这个目录的权限，参考[添加用户](#添加用户)一节最后两行试一下。
-
+有时候新安装桌面可能遇到登录循环的情况，开机后正常输入用户名密码，结果回车登录之后又回到输入密码界面。这种情况可能是因为没有 /home/[用户名] 目录或者用户没有这个目录的权限，创建试一下。
+```shell
+mkdir /home/[用户名] 
+chown -R [用户名]:[用户名] /home/[用户名]
+```
 
 安装完成，重启进入系统
 ```shell
@@ -470,6 +492,7 @@ reboot
 
 重启之后应该就能看到一个登陆界面，登陆进去看到桌面就是安装成功了！如果安装过程中有任何问题欢迎在下方留言。有关一些常用软件的安装在[下一篇文章](https://linhandev.github.io/posts/Arch-Apps/)中记录。
 
+hwclock --systohc
 
 [//]: # (swap btrfs: truncate -s 0 /swap/swapfile; chattr +C /swap/swapfile; btrfs property set /swap/swapfile compression none; dd if=/dev/zero of=/swap/swapfile bs=1G count=2 status=progress; chmod 600 /swap/swapfile; mkswap /swap/swapfile; swapon /swap/swapfile; vim /etc/fstab； /swap/swapfile none swap defaults 0 0 )
 
