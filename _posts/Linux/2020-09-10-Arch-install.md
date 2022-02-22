@@ -305,10 +305,10 @@ mkfs.ext4 /dev/[主分区]
   - discard=async：大概是异步进行trim，可以降低读延迟
   ```shell
   umount /mnt
-  mount -o noatime,compress=lzo,space_cache=v2,ssd,discard=asyncsubvol=@ /dev/${part_name} /mnt
+  mount -o noatime,compress=lzo,space_cache=v2,ssd,discard=async,subvol=@ /dev/${part_name} /mnt
   mkdir /mnt/{home,swap,.snapshots}
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@home /dev/${part_name} /mnt/home
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
+  mount -o noatime,compress=lzo,space_cache=v2,ssd,discard=async,subvol=@home /dev/${part_name} /mnt/home
+  mount -o noatime,compress=lzo,space_cache=v2,ssd,discard=async,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
   mount -o nodatacow,ssd,subvol=@swap /dev/${part_name} /mnt/swap
   ```
   
