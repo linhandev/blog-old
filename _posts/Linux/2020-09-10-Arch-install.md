@@ -481,9 +481,8 @@ lightdm-slick-greeter
 pacman -S xorg xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 systemctl enable lightdm
 ```
-![image](https://user-images.githubusercontent.com/29757093/155205142-c3980f9b-f55f-4c5c-b02d-96314ffe73e1.png)
 
-120多个包
+220多个包
 
 ### KDE
 ```shell
