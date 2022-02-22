@@ -97,14 +97,6 @@ ssh root@[上面ip a看到的ip]
 ```
 </details>
 
-## 校准时间
-```shell
-# timedatectl list-timezones # 显示所有时区，按q退出
-timedatectl set-timezone Asia/Shanghai
-timedatectl set-ntp true # 开启联网时间校准
-hwclock --systohc
-```
-
 ## 硬盘分区
 硬盘上创建了文件系统才能用。首先检查电脑是不是用了uefi
 ```shell
@@ -308,6 +300,12 @@ mkfs.ext4 /dev/[主分区]
   ```
 
   挂载子卷
+  - noatime： 不写accesstime，速度更快
+  - compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
+  - space_cache=v2：将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
+  - nodatacow：禁用cow，新数据直接覆盖
+  - ssd：开启针对ssd的优化
+  - discard=async：大概是异步进行trim，可以降低读延迟
   ```shell
   umount /mnt
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@ /dev/${part_name} /mnt
@@ -316,10 +314,7 @@ mkfs.ext4 /dev/[主分区]
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
   mount -o nodatacow,subvol=@swap /dev/${part_name} /mnt/swap
   ```
-  - noatime： 不写accesstime，速度更快
-  - compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
-  - space_cache=v2：将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
-  - nodatacow：禁用cow，新数据直接覆盖
+
 
 </details>
 
@@ -366,7 +361,6 @@ cat /mnt/etc/fstab
   # MODULES=(btrfs)
   mkinitcpio -p linux
   ```
-  
 </details>
 
 切换到新装好的系统
@@ -388,6 +382,18 @@ arch-chroot /mnt
   
 </details>
 
+## 校准时间
+```shell
+# timedatectl list-timezones # 显示所有时区，按q退出
+# ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localetime
+timedatectl set-timezone Asia/Shanghai
+timedatectl set-ntp true # 开启联网时间校准
+hwclock --systohc
+```
+
+todo
+echo "KEYMAP=[键盘布局]" >> /etc/vconsole.conf
+
 ## 语言
 ```shell
 vim /etc/locale.gen
@@ -408,23 +414,18 @@ echo LANG=en_US.UTF-8 > /etc/locale.conf
 
 ## 设置网络
 ```shell
-vim /etc/hostname
-# 按 i 编辑，输入一个hostname
-# 两下esc，输入 :wq 保存并退出
+hostname=[随便选一个hostname] # 不建议用自己的名字之类的个人信息，这个至少局域网里是能看到的
+echo ${hostname} >> /etc/hostname
+cat /etc/hostname
 ```
-
-![image](https://user-images.githubusercontent.com/29757093/139164588-c485c164-7398-4d73-8719-e9805efd8d6b.png)
 
 ```shell
-vim /etc/hosts
-# 按 i 编辑，输入以下内容
+echo "
 127.0.0.1 localhost
 ::1 localhost
-127.0.0.1 [刚才设置的的hostname]
-# 两下esc，输入 :wq 保存并退出
+127.0.0.1 ${hostname}
+"
 ```
-
-![image](https://user-images.githubusercontent.com/29757093/139164725-ee7d9110-04f6-4170-a647-3d6d456eeeb5.png)
 
 ## 安装grub
 uefi系统
