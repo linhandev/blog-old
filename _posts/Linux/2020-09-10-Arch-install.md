@@ -42,9 +42,7 @@ Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十�
 ![image](https://user-images.githubusercontent.com/29757093/139161941-9e1e6abc-4e50-4797-b15d-8216001e2866.png)
 
 # 键位
-国内的键盘一般都不需要改键位，需要可以参考[官方教程](https://wiki.archlinux.org/title/installation_guide#Set_the_console_keyboard_layout)
-
-[//]: # (TODO: 键位 localctl list-keymaps | grep ..; loadkeys ...)
+国内的键盘一般都不需要改键位，如果需要可以参考[官方教程](https://wiki.archlinux.org/title/installation_guide#Set_the_console_keyboard_layout)
 
 ## 联网
 安装过程中需要联网下软件。可以ping一个网站检查网络连接
@@ -102,7 +100,9 @@ timedatectl set-ntp true # 开启联网时间校准
 ```shell
 ls /sys/firmware/efi/efivars
 ```
-如果说没有这个路径那就是没用uefi，下面分区的时候跳过uefi分区的部分。如果出了一堆文件就是用了uefi，需要做一个uefi分区。
+如果说没有这个路径那就是没用uefi，下面分区的时候跳过uefi分区的部分。如果像下图一样出了一堆文件就是用了uefi，需要做一个uefi分区。
+
+![image](https://user-images.githubusercontent.com/29757093/155045718-cd58db21-29a2-404e-8d9c-6da3589d608a.png)
 
 除了uefi分区至少还需要一个root分区，一般还会做一个swap。一些特殊用途的系统比如服务器可能/srv或者/var下会存巨多的文件，这样可以给这个路径单开一个分区放到一个比较大的盘上，这个过程和做root分区是相同的。这个教程就做三个分区：uefi，root和swap。
 
