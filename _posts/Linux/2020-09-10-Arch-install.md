@@ -479,10 +479,12 @@ passwd ${username} # 设置新用户密码
 ### xfce4
 
 ```shell
-pacman -S xorg
-pacman -S xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+pacman -S xorg xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 systemctl enable lightdm
 ```
+![image](https://user-images.githubusercontent.com/29757093/155205142-c3980f9b-f55f-4c5c-b02d-96314ffe73e1.png)
+
+120多个包
 
 ### KDE
 ```shell
@@ -491,6 +493,7 @@ systemctl enable sddm.service
 ```
 ![image](https://user-images.githubusercontent.com/29757093/155061233-99de26b9-e02c-41e3-ae7d-a7c2050b0723.png)
 
+800多个包
 
 有时候新安装桌面可能遇到登录循环的情况，开机后正常输入用户名密码，结果回车登录之后又回到输入密码界面。这种情况可能是因为没有 /home/[用户名] 目录或者用户没有这个目录的权限，创建试一下。
 ```shell
