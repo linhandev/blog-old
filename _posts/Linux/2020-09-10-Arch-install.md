@@ -183,7 +183,7 @@ mkswap /dev/[swap分区]
 swapon /dev/[swap分区] 
 # swapon 也可以写多个swap分区，比如 swapon /dev/nvme0n1p2 /dev/nvme1n1p3，这样多个swap分区应该会像raid 0一样做stripping加快速度
 ```
-主分区文件系统有三种选择，绝大多数情况下最简单的ext4是最合适的，跑下面这一行之后直接到[安装Arch](#安装Arch)一节就可以。
+主分区文件系统有三种选择，绝大多数情况下最简单的ext4是最合适的，跑下面这一行之后直接到[安装Arch](#安装arch)一节就可以。
 ```shell
 mkfs.ext4 /dev/[主分区]
 ```
