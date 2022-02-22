@@ -296,7 +296,7 @@ mkfs.ext4 /dev/[主分区]
   btrfs su cr /mnt/@.snapshots
   ```
 
-  挂载子卷
+  挂载子卷，一些参数的解释
   - noatime： 不写accesstime，速度更快
   - compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
   - space_cache=v2：将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
@@ -305,11 +305,11 @@ mkfs.ext4 /dev/[主分区]
   - discard=async：大概是异步进行trim，可以降低读延迟
   ```shell
   umount /mnt
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@ /dev/${part_name} /mnt
+  mount -o noatime,compress=lzo,space_cache=v2,ssd,discard=asyncsubvol=@ /dev/${part_name} /mnt
   mkdir /mnt/{home,swap,.snapshots}
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@home /dev/${part_name} /mnt/home
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
-  mount -o nodatacow,subvol=@swap /dev/${part_name} /mnt/swap
+  mount -o nodatacow,ssd,subvol=@swap /dev/${part_name} /mnt/swap
   ```
   
 </details>
