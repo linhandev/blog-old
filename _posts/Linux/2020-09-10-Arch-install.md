@@ -259,9 +259,9 @@ mkfs.ext4 /dev/[主分区]
 <details>
   <summary>可选步骤。Btrfs提供raid和快照功能，做起来比较复杂不推荐新手用</summary>
 
-  btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，在文件系统级别融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评差很多，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。
+  btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs应该只有一个竞品zfs，这两个文件系统融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot，此外可以做跨盘的文件系统并开启raid。总体上来说速度更快，功能更多。个人在用btrfs的过程中还没遇到什么大问题，但是和zfs相比btrfs风评差很多，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。研究明白btrfs之后这篇会加做zfs的过程。
 
-  上一节已经做好了uefi和swap分区，root分区也创建了，从mkfs开始。类似逻辑卷，btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，下面是官方给的一些常用例子
+  上一节已经做好了root，uefi和swap三个分区，这里从mkfs.btrfs开始。类似逻辑卷，btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，下面是官方给的一些常用例子
 
   ```shell
   # Create a filesystem across four drives (metadata mirrored, linear data allocation)
@@ -277,23 +277,32 @@ mkfs.ext4 /dev/[主分区]
   mkfs.btrfs -m single /dev/sdb
   ```
 
-  比如我做的两块盘raid
+  比如我的两块ssd raid
   ```shell
   mkfs.btrfs -f -d raid0 /dev/nvme0n1p1 /dev/nvme1n1p2
   ```
   ![image](https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png)
-
-  挂载btrfs分区，创建子卷
-
+  
+  做好btrfs文件系统之后就是挂载和创建子卷。这里的子卷结构是[Arch Wiki](https://wiki.archlinux.org/title/Snapper#Suggested_filesystem_layout)的推荐加上一点个人理解。
+  
+  直接用btrfs创建和管理快照比较麻烦，openSUSE社区的snapper比较推荐。snapper在快照的时候不会包含子卷里挂的子卷。根目录必须是一个子卷，所以如果其他子卷挂在根目录下，快照根目录子卷只会包含根目录里不是子卷的目录，这些根目录下的子卷需要分别创建快照，比较麻烦。综上用的子卷结构是整个系统基本上都直接扔到根目录的子卷里，给不希望回滚的目录单独创建子卷挂上去。比如数据库的数据一般在/var目录下，ftp和web的文件一般在/srv下，显卡驱动一类第三方软件一般在/opt下，临时文件一般在/tmp下。这样快照+回滚的时候不会影响到这些子卷里的内容。
+  
+  特殊一点的是快照和swap，快照需要单独用一个子卷，否则会快照到快照。btrfs不支持快照swap文件，所以单独开一个子卷放swap文件，不一定用得上，但是反正他也不占地方。之后把home目录单独做子卷拿出去。整体结构如Arch wiki的这个图
+  
+  ![image](https://user-images.githubusercontent.com/29757093/155220812-a00bbf82-db57-4229-86aa-509760b8f77e.png)
+    
+  todo 研究snapper alternative
+  
+  开干
   ```shell
   part_name=[btrfs的任意一个分区名字]
-  mount /dev/${part_name} /mnt
-  btrfs su cr /mnt/@root
+  mount /dev/${part_name} /mnt # ${part_name} 是bash变量，前面写的 [btrfs的任意一个分区名字] 会被放到 ${part_name}
+  btrfs subvolume create /mnt/@
   btrfs su cr /mnt/@home
-  btrfs su cr /mnt/@var # 一般放可变长度的文件，比如log，临时cache和数据库
+<!--   btrfs su cr /mnt/@var # 一般放可变长度的文件，比如log，临时cache和数据库
   btrfs su cr /mnt/@srv # web服务器和ftp文件
   btrfs su cr /mnt/@opt # 第三方软件
-  btrfs su cr /mnt/@tmp # 临时文件和cache
+  btrfs su cr /mnt/@tmp # 临时文件和cache -->
   btrfs su cr /mnt/@swap # swap文件推荐放进单独的子卷
   btrfs su cr /mnt/@.snapshots
   ```
@@ -301,22 +310,16 @@ mkfs.ext4 /dev/[主分区]
   挂载子卷
   ```shell
   umount /mnt
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@root /dev/${part_name} /mnt
-  mkdir /mnt/{home,var,srv,opt,tmp,swap,.snapshots}
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@ /dev/${part_name} /mnt
+  mkdir /mnt/{home,swap,.snapshots}
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@home /dev/${part_name} /mnt/home
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@srv /dev/${part_name} /mnt/srv
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@tmp /dev/${part_name} /mnt/tmp
-  mount -o noatime,compress=lzo,space_cache=v2,subvol=@opt /dev/${part_name} /mnt/opt
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
   mount -o nodatacow,subvol=@swap /dev/${part_name} /mnt/swap
-  mount -o nodatacow,subvol=@var /dev/${part_name} /mnt/var
   ```
-  - noatime： 不写accesstime
+  - noatime： 不写accesstime，速度更快
   - compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
-  - space_cache=v2：目前已经是默认开启了，将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
+  - space_cache=v2：将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
   - nodatacow：禁用cow，新数据直接覆盖
-
-  ![image](https://user-images.githubusercontent.com/29757093/153567324-e98fb530-8e95-49ab-9517-575f71ff5032.png)
 
 </details>
 
