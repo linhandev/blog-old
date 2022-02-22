@@ -322,22 +322,22 @@ cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bk # 备份镜像列表
 reflector -c "CN" -l 20 -n 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
-[//]: # (TODO: ucode 是不是默认就装了)
 
 ```shell
 mount /dev/[主分区] /mnt # 挂载主分区
 pacstrap /mnt base linux linux-firmware linux-headers vim base-devel opendoas grub efibootmgr
-pacstrap /mnt [intel/amd]-ucode # ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-ucode或amd-ucode 
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 ```
 
 <details>
   <summary>Raid</summary>
-把mdadm配置写入文件
-```shell
-mdadm --detail --scan >> /mnt/etc/mdadm.conf
-```  
+  
+  把mdadm配置写入文件
+  ```shell
+  mdadm --detail --scan >> /mnt/etc/mdadm.conf
+  ```  
+  
 </details>
 
 <details>
