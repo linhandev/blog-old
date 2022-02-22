@@ -299,14 +299,14 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@tmp /dev/${part_name} /mnt/tmp
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@opt /dev/${part_name} /mnt/opt
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshot /dev/${part_name} /mnt/.snapshot
-  mount -o nodatacow,subvol=@swap /dev/[btrfs的任意一个分区] /mnt/swap
-  mount -o nodatacow,subvol=@var /dev/[btrfs的任意一个分区] /mnt/var
+  mount -o nodatacow,subvol=@swap /dev/${part_name} /mnt/swap
+  mount -o nodatacow,subvol=@var /dev/${part_name} /mnt/var
   mount /dev/[uefi分区] /mnt/boot
   ```
-  noatime： 不写accesstime
-  compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
-  space_cache：目前已经是默认开启了，将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
-  nodatacow：禁用cow，新数据直接覆盖
+  - noatime： 不写accesstime
+  - compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
+  - space_cache=v2：目前已经是默认开启了，将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
+  - nodatacow：禁用cow，新数据直接覆盖
 
   ![image](https://user-images.githubusercontent.com/29757093/153567324-e98fb530-8e95-49ab-9517-575f71ff5032.png)
 
@@ -322,22 +322,15 @@ cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bk # 备份镜像列表
 reflector -c "CN" -l 20 -n 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
-[//]: # (TODO: ucode)
+[//]: # (TODO: ucode 是不是默认就装了)
 
 ```shell
 mount /dev/[主分区] /mnt # 挂载主分区
 pacstrap /mnt base linux linux-firmware linux-headers vim base-devel opendoas grub efibootmgr
-pacstrap [intel/amd]-ucode # ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-ucode或amd-ucode 
+pacstrap /mnt [intel/amd]-ucode # ucode类似bios更新，命令最后根据自己是intel还是amd的cpu装intel-ucode或amd-ucode 
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 ```
-
-<details>
-  <summary>btrfs</summary>
-```shell
-pacstrap /mnt btrfs-progs grub-btrfs
-```
-</details>
 
 <details>
   <summary>Raid</summary>
@@ -345,6 +338,13 @@ pacstrap /mnt btrfs-progs grub-btrfs
 ```shell
 mdadm --detail --scan >> /mnt/etc/mdadm.conf
 ```  
+</details>
+
+<details>
+  <summary>btrfs</summary>
+```shell
+pacstrap /mnt btrfs-progs grub-btrfs
+```
 </details>
 
 切换到新装好的系统
@@ -450,27 +450,31 @@ mv /usr/bin/sudo /usr/bin/sudo-bk
 ln -s /usr/bin/doas /usr/bin/sudo
 ```
 
-<details><summary>Btrfs snapshot</summary>
+<details>
+  <summary>Btrfs snapshot</summary>
 
-```shell
-umount /.snapshots
-rm -rf /.snapshots
-snapper -c root create-config /
-vi /etc/snapper/configs/root
-# ALLOW_USERS='[用户名]'
-# 最后的期限限制
-chmod a+rx /.snapshots
- 
-systemctl start snapper-timeline.timer
-systemctl enable snapper-timeline.timer
-systemctl start snapper-cleanup.timer
-systemctl enable snapper-cleanup.timer
-systemctl start grub-btrfs.path
-systemctl enable grub-btrfs.path
+  ```shell
+  exit
+  reboot # snapper 默认需要dbus，重启比较方便
+  pacman -S snapper
+  umount /.snapshots
+  rm -rf /.snapshots
+  snapper -c root create-config /
+  vi /etc/snapper/configs/root
+  # ALLOW_USERS='[用户名]'
+  # 最后的期限限制
+  chmod a+rx /.snapshots
 
-snapper -c root list
-snapper -c root create --description BeforeGui
-```
+  systemctl start snapper-timeline.timer
+  systemctl enable snapper-timeline.timer
+  systemctl start snapper-cleanup.timer
+  systemctl enable snapper-cleanup.timer
+  systemctl start grub-btrfs.path
+  systemctl enable grub-btrfs.path
+
+  snapper -c root list
+  snapper -c root create --description BeforeGui
+  ```
 </details>
 
 ## 桌面
