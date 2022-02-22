@@ -476,12 +476,21 @@ passwd ${username} # 设置新用户密码
 </details>
 
 ## 桌面
-xfce4桌面
+### xfce4
+
 ```shell
 pacman -S xorg
 pacman -S xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 systemctl enable lightdm
 ```
+
+### KDE
+```shell
+pacman -S xorg plasma plasma-wayland-session kde-applications 
+systemctl enable sddm.service
+```
+![image](https://user-images.githubusercontent.com/29757093/155061233-99de26b9-e02c-41e3-ae7d-a7c2050b0723.png)
+
 
 有时候新安装桌面可能遇到登录循环的情况，开机后正常输入用户名密码，结果回车登录之后又回到输入密码界面。这种情况可能是因为没有 /home/[用户名] 目录或者用户没有这个目录的权限，创建试一下。
 ```shell
