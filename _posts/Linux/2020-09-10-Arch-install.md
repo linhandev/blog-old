@@ -292,10 +292,6 @@ mkfs.ext4 /dev/[主分区]
   mount /dev/${part_name} /mnt # ${part_name} 是bash变量，前面写的 [btrfs的任意一个分区名字] 会被放到 ${part_name}
   btrfs subvolume create /mnt/@
   btrfs su cr /mnt/@home
-<!--   btrfs su cr /mnt/@var # 一般放可变长度的文件，比如log，临时cache和数据库
-  btrfs su cr /mnt/@srv # web服务器和ftp文件
-  btrfs su cr /mnt/@opt # 第三方软件
-  btrfs su cr /mnt/@tmp # 临时文件和cache -->
   btrfs su cr /mnt/@swap # swap文件推荐放进单独的子卷
   btrfs su cr /mnt/@.snapshots
   ```
@@ -315,8 +311,7 @@ mkfs.ext4 /dev/[主分区]
   mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
   mount -o nodatacow,subvol=@swap /dev/${part_name} /mnt/swap
   ```
-
-
+  
 </details>
 
 ## 安装Arch
