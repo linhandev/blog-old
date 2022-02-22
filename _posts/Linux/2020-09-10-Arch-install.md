@@ -441,11 +441,11 @@ systemctl enable wpa_supplicant.service
 ```shell
 username=[用户名]
 useradd -m ${username}
-passwd ${username} # 设置新用户密码
 # 添加一行
 echo "permit persist ${username} as root" >> /etc/doas.conf # 允许 用户名 作为root执行，persist是输入一次密码之后一段时间不用再输入
 mv /usr/bin/sudo /usr/bin/sudo-bk
 ln -s /usr/bin/doas /usr/bin/sudo
+passwd ${username} # 设置新用户密码
 ```
 
 <details>
