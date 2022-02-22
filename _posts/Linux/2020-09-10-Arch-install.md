@@ -251,63 +251,63 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
 
   btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，在文件系统级别融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评极差，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。
 
-我只把btrfs用在root分区上，uefi和swap分区还是正常做，步骤参考下一节。
+  我只把btrfs用在root分区上，uefi和swap分区还是正常做，步骤参考下一节。
 
-类似逻辑卷，btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，下面是官方给的一些常用例子
+  类似逻辑卷，btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，下面是官方给的一些常用例子
 
-```shell
-# Create a filesystem across four drives (metadata mirrored, linear data allocation)
-mkfs.btrfs -d single /dev/sdb /dev/sdc /dev/sdd /dev/sde # 简单跨盘，不raid
+  ```shell
+  # Create a filesystem across four drives (metadata mirrored, linear data allocation)
+  mkfs.btrfs -d single /dev/sdb /dev/sdc /dev/sdd /dev/sde # 简单跨盘，不raid
 
-# Stripe the data without mirroring, metadata are mirrored
-mkfs.btrfs -d raid0 /dev/sdb /dev/sdc # 相当于raid0
+  # Stripe the data without mirroring, metadata are mirrored
+  mkfs.btrfs -d raid0 /dev/sdb /dev/sdc # 相当于raid0
 
-# Use raid10 for both data and metadata
-mkfs.btrfs -m raid10 -d raid10 /dev/sdb /dev/sdc /dev/sdd /dev/sde
+  # Use raid10 for both data and metadata
+  mkfs.btrfs -m raid10 -d raid10 /dev/sdb /dev/sdc /dev/sdd /dev/sde
 
-# Don't duplicate metadata on a single drive (default on single SSDs)
-mkfs.btrfs -m single /dev/sdb
-```
+  # Don't duplicate metadata on a single drive (default on single SSDs)
+  mkfs.btrfs -m single /dev/sdb
+  ```
 
-比如我做的两块盘raid
+  比如我做的两块盘raid
 
-![image](https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png)
+  ![image](https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png)
 
-挂载btrfs分区，创建子卷
+  挂载btrfs分区，创建子卷
 
-```shell
-mount /dev/[btrfs的任意一个分区] /mnt
-btrfs su cr /mnt/@root
-btrfs su cr /mnt/@home
-btrfs su cr /mnt/@var # 一般放可变长度的文件，比如log，临时cache和数据库
-btrfs su cr /mnt/@srv # web服务器和ftp文件
-btrfs su cr /mnt/@opt # 第三方软件
-btrfs su cr /mnt/@tmp # 临时文件和cache
-btrfs su cr /mnt/@swap # swap文件推荐放进单独的子卷
-btrfs su cr /mnt/@.snapshot
-```
+  ```shell
+  mount /dev/[btrfs的任意一个分区] /mnt
+  btrfs su cr /mnt/@root
+  btrfs su cr /mnt/@home
+  btrfs su cr /mnt/@var # 一般放可变长度的文件，比如log，临时cache和数据库
+  btrfs su cr /mnt/@srv # web服务器和ftp文件
+  btrfs su cr /mnt/@opt # 第三方软件
+  btrfs su cr /mnt/@tmp # 临时文件和cache
+  btrfs su cr /mnt/@swap # swap文件推荐放进单独的子卷
+  btrfs su cr /mnt/@.snapshot
+  ```
 
-挂载子卷
-[//]: # (TODO: cannot disable free space tree space_cache)
-```shell
-umount /mnt
-mount -o noatime,compress=lzo,space_cache,subvol=@root /dev/[btrfs的任意一个分区] /mnt
-mkdir /mnt/{boot,home,var,srv,opt,tmp,swap,.snapshot}
-mount -o noatime,compress=lzo,space_cache,subvol=@home /dev/[btrfs的任意一个分区] /mnt/home
-mount -o noatime,compress=lzo,space_cache,subvol=@srv /dev/[btrfs的任意一个分区] /mnt/srv
-mount -o noatime,compress=lzo,space_cache,subvol=@tmp /dev/[btrfs的任意一个分区] /mnt/tmp
-mount -o noatime,compress=lzo,space_cache,subvol=@opt /dev/[btrfs的任意一个分区] /mnt/opt
-mount -o noatime,compress=lzo,space_cache,subvol=@.snapshot /dev/[btrfs的任意一个分区] /mnt/.snapshot
-mount -o nodatacow,subvol=@swap /dev/[btrfs的任意一个分区] /mnt/swap
-mount -o nodatacow,subvol=@var /dev/[btrfs的任意一个分区] /mnt/var
-mount /dev/[uefi分区] /mnt/boot
-```
-noatime： 不写accesstime
-compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
-space_cache：目前已经是默认开启了，将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
-nodatacow：禁用cow，新数据直接覆盖
+  挂载子卷
+  [//]: # (TODO: cannot disable free space tree space_cache)
+  ```shell
+  umount /mnt
+  mount -o noatime,compress=lzo,space_cache,subvol=@root /dev/[btrfs的任意一个分区] /mnt
+  mkdir /mnt/{boot,home,var,srv,opt,tmp,swap,.snapshot}
+  mount -o noatime,compress=lzo,space_cache,subvol=@home /dev/[btrfs的任意一个分区] /mnt/home
+  mount -o noatime,compress=lzo,space_cache,subvol=@srv /dev/[btrfs的任意一个分区] /mnt/srv
+  mount -o noatime,compress=lzo,space_cache,subvol=@tmp /dev/[btrfs的任意一个分区] /mnt/tmp
+  mount -o noatime,compress=lzo,space_cache,subvol=@opt /dev/[btrfs的任意一个分区] /mnt/opt
+  mount -o noatime,compress=lzo,space_cache,subvol=@.snapshot /dev/[btrfs的任意一个分区] /mnt/.snapshot
+  mount -o nodatacow,subvol=@swap /dev/[btrfs的任意一个分区] /mnt/swap
+  mount -o nodatacow,subvol=@var /dev/[btrfs的任意一个分区] /mnt/var
+  mount /dev/[uefi分区] /mnt/boot
+  ```
+  noatime： 不写accesstime
+  compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级
+  space_cache：目前已经是默认开启了，将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写
+  nodatacow：禁用cow，新数据直接覆盖
 
-![image](https://user-images.githubusercontent.com/29757093/153567324-e98fb530-8e95-49ab-9517-575f71ff5032.png)
+  ![image](https://user-images.githubusercontent.com/29757093/153567324-e98fb530-8e95-49ab-9517-575f71ff5032.png)
 
 </details>
 
