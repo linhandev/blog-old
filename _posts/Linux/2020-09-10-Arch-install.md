@@ -180,6 +180,7 @@ lsblk # 再次查看分区情况
 
 之后需要在分区上创建文件系统
 ```shell
+# mkfs.vfat /dev/[uefi分区] # 没有uefi分区跳过这行
 mkfs.fat -F32 /dev/[uefi分区] # 没有uefi分区跳过这行
 mkswap /dev/[swap分区]
 swapon /dev/[swap分区] 
@@ -361,6 +362,8 @@ cat /mnt/etc/fstab
   # MODULES=(btrfs)
   mkinitcpio -p linux
   ```
+  systemctl enable fstrim.timer
+
 </details>
 
 切换到新装好的系统
@@ -378,8 +381,7 @@ arch-chroot /mnt
   HOOKS=(base udev autodetect keyboard modconf block mdadm_udev filesystems fsck) # 在HOOKS这行添加 mdadm_udev
 
   mkinitcpio -p linux
-  ```
-  
+  ```  
 </details>
 
 ## 校准时间
@@ -423,7 +425,7 @@ cat /etc/hostname
 echo "
 127.0.0.1 localhost
 ::1 localhost
-127.0.0.1 ${hostname}
+127.0.0.1 ${hostname}.localdomail ${hostname}
 "
 ```
 
@@ -478,6 +480,8 @@ passwd ${username} # 设置新用户密码
 </details>
 
 ### xfce4
+lightdm-slick-greeter
+
 ```shell
 pacman -S xorg xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 systemctl enable lightdm
