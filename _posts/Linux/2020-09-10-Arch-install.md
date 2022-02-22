@@ -251,9 +251,7 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
 
   btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs和zfs类似，在文件系统级别融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot。和zfs相比btrfs风评差很多，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。
 
-  我只把btrfs用在root分区上，uefi和swap分区还是正常做，步骤参考下一节。
-
-  类似逻辑卷，btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，下面是官方给的一些常用例子
+  上一节已经做好了uefi和swap分区，root分区也创建了，从mkfs开始。类似逻辑卷，btrfs的文件系统可以跨盘，详情参考[btrfs wiki](https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices)，下面是官方给的一些常用例子
 
   ```shell
   # Create a filesystem across four drives (metadata mirrored, linear data allocation)
@@ -270,7 +268,9 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
   ```
 
   比如我做的两块盘raid
-
+  ```shell
+  mkfs.btrfs -f -d raid0 /dev/nvme0n1p1 /dev/nvme1n1p2
+  ```
   ![image](https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png)
 
   挂载btrfs分区，创建子卷
@@ -291,13 +291,14 @@ Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和�
   [//]: # (TODO: cannot disable free space tree space_cache)
   ```shell
   umount /mnt
-  mount -o noatime,compress=lzo,space_cache,subvol=@root /dev/[btrfs的任意一个分区] /mnt
+  part_name=[btrfs的任意一个分区名字]
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@root /dev/${part_name} /mnt
   mkdir /mnt/{boot,home,var,srv,opt,tmp,swap,.snapshot}
-  mount -o noatime,compress=lzo,space_cache,subvol=@home /dev/[btrfs的任意一个分区] /mnt/home
-  mount -o noatime,compress=lzo,space_cache,subvol=@srv /dev/[btrfs的任意一个分区] /mnt/srv
-  mount -o noatime,compress=lzo,space_cache,subvol=@tmp /dev/[btrfs的任意一个分区] /mnt/tmp
-  mount -o noatime,compress=lzo,space_cache,subvol=@opt /dev/[btrfs的任意一个分区] /mnt/opt
-  mount -o noatime,compress=lzo,space_cache,subvol=@.snapshot /dev/[btrfs的任意一个分区] /mnt/.snapshot
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@home /dev/${part_name} /mnt/home
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@srv /dev/${part_name} /mnt/srv
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@tmp /dev/${part_name} /mnt/tmp
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@opt /dev/${part_name} /mnt/opt
+  mount -o noatime,compress=lzo,space_cache=v2,subvol=@.snapshot /dev/${part_name} /mnt/.snapshot
   mount -o nodatacow,subvol=@swap /dev/[btrfs的任意一个分区] /mnt/swap
   mount -o nodatacow,subvol=@var /dev/[btrfs的任意一个分区] /mnt/var
   mount /dev/[uefi分区] /mnt/boot
