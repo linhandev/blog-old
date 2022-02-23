@@ -239,3 +239,112 @@ point spread function：一个点的输入一般result in一个区域，point sp
 
 ![image](https://user-images.githubusercontent.com/29757093/154567903-a7563d93-3f26-418e-8db5-4c38e983fc9c.png)
 
+
+# 采样插值
+
+![sample](/assets/img/post/Note/sample.png)
+- 采样：连续到离散
+- 插值：离散到连续
+
+符号
+- 采样间隔：$\Delta_x$，$\Delta_y$
+- 采样频率：$f_{s,x}=\frac{1}{\Delta_x}$，$f_{s,y}=\frac{1}{\Delta_y}$
+- 连续图像：$f(x, y)$
+- 采样图像：$f_s(m, n)$
+- 重建图像：$\hat{f}(x, y)$
+
+采样：时域乘impulse train;频域卷impulse train。(impulse train 傅立叶还是impulse train)
+重建：频域乘低通，频率=1/2采样率;时域和sinc卷积(把sinc放在每一个像素上，幅度是像素强度值，最后求和;x,y位置的重建值是所有采样点的值加权平均，权重是2d sinc在x,y方向距离上的取值)
+
+$f_x(m, n)=f(m\Delta_x, n\Delta_y) \quad m=0,1,...,M, \quad n=0,1,...,N$
+
+采样可以看作 原图*impulse train：
+$$
+\begin{aligned}
+p(x, y)&=\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} \delta\left(x-m \Delta_{x}, y-n \Delta_{y}\right)\\
+\end{aligned}
+$$
+
+impulse傅立叶：
+- 1D
+$$
+\begin{aligned}
+&p(t)=\sum_{n} \delta(t-n \Delta t) \Leftrightarrow P(u)=\frac{1}{\Delta t} \sum_{n} \delta\left(u-n f_{s}\right) \\
+&\text { where } f_{s}=\frac{1}{\Delta t}
+\end{aligned}
+$$
+- 2D
+$$
+\begin{aligned}
+&p(x, y)=\sum_{m, n} \delta(x-m \Delta x, y-n \Delta y) \Leftrightarrow P(u, v)=\frac{1}{\Delta x \Delta y} \sum_{m, n} \delta\left(u-m f_{s, x}, v-n f_{s, y}\right) \\
+&\text { where } f_{s, x}=\frac{1}{\Delta x}, f_{s, y}=\frac{1}{\Delta y}
+\end{aligned}
+$$
+
+时域相乘，频域卷积
+
+- 采样时域：信号 x impulse train
+$$
+\begin{aligned}
+\tilde{f_{s}}(x, y)&=f(x, y) \times p(x, y)\\
+&=\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} f\left(m \Delta_{x}, n \Delta_{y}\right) \delta\left(x-m \Delta_{x}, y-n \Delta_{y}\right) \\
+&=\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} f_{s}(m, n) \delta\left(x-m \Delta_{x}, y-n \Delta_{y}\right) \\
+\end{aligned}
+$$
+- 采样频域：信号 * impulse train
+$$
+\begin{aligned}
+F_{s}(u, v)&=F(u, v) * P(u, v) \\
+P(u, v)&=\frac{1}{\Delta x \Delta y} \sum_{m, n} \delta\left(u-m f_{s, x}, v-n f_{s, y}\right) \\
+\Rightarrow F_{s}(u, v)&=\frac{1}{\Delta x \Delta y} \sum_{m, n} F\left(u-m f_{s, x}, v-n f_{s, y}\right) \\
+&\text { where } f_{s, x}=\frac{1}{\Delta x}, f_{s, y}=\frac{1}{\Delta y}\\
+\end{aligned}
+$$
+
+- 重建时域：采样信号 * 2d sinc
+$$
+\begin{aligned}
+H(u, v)&=\left\{\begin{array}{cc}
+\Delta x \Delta y & |u| \leq \frac{f_{s, x}}{2},|v| \leq \frac{f_{s, y}}{2} \\
+& 0 \quad \text { otherwise }
+\end{array} \Leftrightarrow h(x, y)=\frac{\sin \pi f_{s, x} x}{\pi f_{s, x} x} \cdot \frac{\sin \pi f_{s, y} y}{\pi f_{s, y} y}\right.\\
+
+\hat{f}(x, y)&=\tilde{f}_{s}(x, y) * h(x, y) \\
+&=\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} f_{s}(m, n) \delta\left(x-m \Delta_{x}, y-n \Delta_{y}\right) * h(x, y) \\
+&=\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} f_{s}(m, n)
+h\left(x-m \Delta_{x}, y-n \Delta_{y}\right) \\
+h(x, y)&=\frac{\sin \left(\pi f_{s, x} x\right)}{\pi f_{s, x} x} \frac{\sin \left(\pi f_{s, y} y\right)}{\pi f_{s, y} y} \\
+\hat{f}(x, y)&=\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} f_{s}(m, n) \frac{\sin \pi f_{s, x}(x-m \Delta x)}{\pi f_{s, x}(x-m \Delta x)} \frac{\sin \pi f_{s, y}(y-m \Delta y)}{\pi f_{s, y}(y-m \Delta y)}
+\end{aligned}
+$$
+
+
+$采样率低\to时域间隔大\to频域间隔小\to和信号卷积有叠加\to伪影\to重建信号比原信号频率低\to采样完图像里能看到比原图周期低的信号$
+
+采样的频率应该大于信号频率的2倍，一个周期至少2个点
+
+![1d aliasing ](/assets/img/post/Note/1d-aliasing.png)
+
+![2d sampling](/assets/img/post/Note/2d-sampling.png)
+
+![2d aliasing](/assets/img/post/Note/2d-aliasing.png)
+
+x采样率够，y采样率不够
+
+![2d cos](/assets/img/post/Note/2d-cos.png)
+
+jaggie
+
+![image downsample](/assets/img/post/Note/image-downsample.png)
+
+
+重建滤波不可能是理想低通，时域无限长。Nyquist filter 性质：
+- 低通
+- 递减：离一个点越远，对这个点重建的贡献应该越小
+- 偶函数
+- 可分 [//]: # (TODO:)
+- $h(0,0)=1$,  $h(m\Delta_x, n\Delta_y)=0$：这样采样值在重建图像里不会变
+
+prefilter，sampling filter：实际图像里可能包含非常高频的信号，在采样之前先过一个截止频率$f_c=\frac{f_s}{2}$的滤波器
+
+![prefilter](/assets/img/post/Note/prefilter.png) 
