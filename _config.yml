@@ -55,7 +55,7 @@ google_site_verification: "StdaX-aj1Cn6KORrAbSA-lotFcfC2BiWqXKNNjjDrYY" # change
 
 
 google_analytics:
-  id: 'G-PQC34E0LNL'              # fill in your Google Analytics ID
+  id: ''              # fill in your Google Analytics ID
   # Google Analytics pageviews report settings
   pv:
     proxy_endpoint:   # fill in the Google Analytics superProxy endpoint of Google App Engine
@@ -111,6 +111,7 @@ kramdown:
     block:
       line_numbers: true
       start_line: 1
+  parse_block_html: true
 
 collections:
   tabs:

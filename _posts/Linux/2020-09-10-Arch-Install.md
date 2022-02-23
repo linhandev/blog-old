@@ -7,6 +7,8 @@ categories:
 tags:
   - Arch
 pin: true
+kramdown:
+  parse_block_html: true
 ---
 
 Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容甚至一些基于Arch发行版用户(比如Manjaro)都用的上。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。
@@ -14,8 +16,12 @@ Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十�
 所有折叠的块都是可选步骤，主要有ssh连接，mdadm raid和btrfs文件系统，不需要的话直接跳过。
 
 <details>
-<summary>折叠块长这样</summary>
+  <summary markdown='span'>
+  折叠块长这样
+  </summary>
+
   折叠起来的都是可选步骤，不需要直接跳过
+
 </details>
 
 # 硬件需求
@@ -82,19 +88,22 @@ quit # 退出iwctl
 
 ## ssh
 <details>
-  <summary>可选步骤。用另一台电脑ssh到正在装的电脑上可以复制命令，方便一点</summary>
+  <summary markdown='span'>
+  可选步骤。用另一台电脑ssh到正在装的电脑上可以复制命令，方便一点
+  </summary>
 
-启动盘的live系统不能复制，一些命令手打比较麻烦。可以考虑用另一台机器ssh到要安装的机器上，方便一点。
+  启动盘的live系统不能复制，一些命令手打比较麻烦。可以考虑用另一台机器ssh到要安装的机器上，方便一点。
 
-```shell
-pacman -Syy openssh # 安装ssh
-systemctl start sshd # 启动ssh服务
-passwd root # 给root设置密码
-ip a # 查看机器ip
+  ```shell
+  pacman -Syy openssh # 安装ssh
+  systemctl start sshd # 启动ssh服务
+  passwd root # 给root设置密码
+  ip a # 查看机器ip
 
-# 在另一台机器上
-ssh root@[上面ip a看到的ip]
-```
+  # 在另一台机器上
+  ssh root@[上面ip a看到的ip]
+  ```
+
 </details>
 
 ## 硬盘分区
@@ -193,8 +202,11 @@ mkfs.ext4 /dev/[主分区]
 如果想提升一点读写速度可以做[软件raid](#raid)，如果想要snapshot功能可以用[btrfs](#btrfs)文件系统。
 
 ## Raid
+
 <details>
-  <summary>可选步骤。软件Raid可以提升一些读写速度</summary>
+  <summary markdown='span'>
+  可选步骤。软件Raid可以提升一些读写速度
+  </summary>
 
   之前在搜教程的时候看到一个Arch + Raid 0经验贴下面的的[评论](https://forum.level1techs.com/t/arch-linux-install-with-2-nvmes-in-raid-0/147268/2)，笑了一下午。必须放在这 /笑哭
 
@@ -251,7 +263,9 @@ mkfs.ext4 /dev/[主分区]
 
 ## btrfs
 <details>
-  <summary>可选步骤。Btrfs提供raid和快照功能，做起来比较复杂不推荐新手用</summary>
+  <summary markdown='span'>
+  可选步骤。Btrfs提供raid和快照功能，做起来比较复杂不推荐新手用
+  </summary>
 
   btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs应该只有一个竞品zfs，这两个文件系统融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot，此外可以做跨盘的文件系统并开启raid。总体上来说速度更快，功能更多。个人在用btrfs的过程中还没遇到什么大问题，但是和zfs相比btrfs风评差很多，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。研究明白btrfs之后这篇会加做zfs的过程。
 
@@ -340,7 +354,9 @@ cat /mnt/etc/fstab
 ```
 
 <details>
-  <summary>Raid</summary>
+  <summary markdown='span'>
+  Raid
+  </summary>
 
   把mdadm配置写入文件
   ```shell
@@ -354,7 +370,9 @@ cat /mnt/etc/fstab
 arch-chroot /mnt
 ```
 <details>
-  <summary>btrfs</summary>
+  <summary markdown='span'>
+  btrfs
+  </summary>
 
   ```shell
   pacman -S btrfs-progs grub-btrfs
@@ -368,7 +386,10 @@ arch-chroot /mnt
 </details>
 
 <details>
-  <summary>Raid</summary>
+  <summary markdown='span'>
+  Raid
+  </summary>
+
   在新系统里装mdadm，和修改一个配置文件。Raid所有配置完成，下面正常安装就行。
 
   ```shell
@@ -379,6 +400,7 @@ arch-chroot /mnt
 
   mkinitcpio -p linux
   ```
+
 </details>
 
 ## 校准时间
@@ -472,8 +494,12 @@ passwd ${username} # 设置新用户密码
 
 ## 桌面
 <details>
-  <summary>Btrfs snapshot</summary>
-  桌面会装很多包，如果用了btrfs，可以在安装桌面之前做一下snapshot。详细步骤参考[这里]()
+  <summary markdown='span'>
+  Btrfs snapshot
+  </summary>
+
+  桌面会装很多包，如果用了btrfs，可以在安装桌面之前做一下snapshot。详细步骤参考[这里](https://linhandev.github.io/posts/Arch-Apps/#btrfs)
+
 </details>
 
 ### xfce4
