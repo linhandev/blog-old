@@ -183,7 +183,7 @@ lsblk # 再次查看分区情况
 # mkfs.vfat /dev/[uefi分区] # 没有uefi分区跳过这行
 mkfs.fat -F32 /dev/[uefi分区] # 没有uefi分区跳过这行
 mkswap /dev/[swap分区]
-swapon /dev/[swap分区] 
+swapon /dev/[swap分区]
 # swapon 也可以写多个swap分区，比如 swapon /dev/nvme0n1p2 /dev/nvme1n1p3，这样多个swap分区应该会像raid 0一样做stripping加快速度
 ```
 主分区文件系统有三种选择，绝大多数情况下最简单的ext4是最合适的，跑下面这一行之后直接到[安装Arch](#安装arch)一节就可以。
@@ -246,6 +246,7 @@ mkfs.ext4 /dev/[主分区]
   4. 在md0里创建一个ext4分区，`mkfs.ext4 /dev/raid 0里的分区`，后面mount的时候也mount这个分区
 
   Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和之后还有几行命令需要执行。
+
 </details>
 
 ## btrfs
@@ -275,17 +276,17 @@ mkfs.ext4 /dev/[主分区]
   mkfs.btrfs -f -d raid0 /dev/nvme0n1p1 /dev/nvme1n1p2
   ```
   ![image](https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png)
-  
+
   做好btrfs文件系统之后就是挂载和创建子卷。这里的子卷结构是[Arch Wiki](https://wiki.archlinux.org/title/Snapper#Suggested_filesystem_layout)的推荐加上一点个人理解。
-  
+
   直接用btrfs创建和管理快照比较麻烦，openSUSE社区的snapper比较推荐。snapper在快照的时候不会包含子卷里挂的子卷。根目录必须是一个子卷，所以如果其他子卷挂在根目录下，快照根目录子卷只会包含根目录里不是子卷的目录，这些根目录下的子卷需要分别创建快照，比较麻烦。综上用的子卷结构是整个系统基本上都直接扔到根目录的子卷里，给不希望回滚的目录单独创建子卷挂上去。比如数据库的数据一般在/var目录下，ftp和web的文件一般在/srv下，显卡驱动一类第三方软件一般在/opt下，临时文件一般在/tmp下。这样快照+回滚的时候不会影响到这些子卷里的内容。
-  
+
   特殊一点的是快照和swap，快照需要单独用一个子卷，否则会快照到快照。btrfs不支持快照swap文件，所以单独开一个子卷放swap文件，不一定用得上，但是反正他也不占地方。之后把home目录单独做子卷拿出去。整体结构如Arch wiki的这个图
-  
+
   ![image](https://user-images.githubusercontent.com/29757093/155220812-a00bbf82-db57-4229-86aa-509760b8f77e.png)
-    
+
   todo 研究snapper alternative
-  
+
   开干
   ```shell
   part_name=[btrfs的任意一个分区名字]
@@ -303,6 +304,7 @@ mkfs.ext4 /dev/[主分区]
   - nodatacow：禁用cow，新数据直接覆盖
   - ssd：开启针对ssd的优化
   - discard=async：大概是异步进行trim，可以降低读延迟
+
   ```shell
   umount /mnt
   mount -o noatime,compress=lzo,space_cache=v2,ssd,discard=async,subvol=@ /dev/${part_name} /mnt
@@ -311,7 +313,7 @@ mkfs.ext4 /dev/[主分区]
   mount -o noatime,compress=lzo,space_cache=v2,ssd,discard=async,subvol=@.snapshots /dev/${part_name} /mnt/.snapshots
   mount -o nodatacow,ssd,subvol=@swap /dev/${part_name} /mnt/swap
   ```
-  
+
 </details>
 
 ## 安装Arch
@@ -339,12 +341,12 @@ cat /mnt/etc/fstab
 
 <details>
   <summary>Raid</summary>
-  
+
   把mdadm配置写入文件
   ```shell
   mdadm --detail --scan >> /mnt/etc/mdadm.conf
-  ```  
-  
+  ```
+
 </details>
 
 切换到新装好的系统
@@ -353,11 +355,11 @@ arch-chroot /mnt
 ```
 <details>
   <summary>btrfs</summary>
-  
+
   ```shell
   pacman -S btrfs-progs grub-btrfs
-  
-  vim /etc/mkinitcpio.conf 
+
+  vim /etc/mkinitcpio.conf
   # MODULES=(btrfs)
   mkinitcpio -p linux
   systemctl enable fstrim.timer
@@ -368,7 +370,7 @@ arch-chroot /mnt
 <details>
   <summary>Raid</summary>
   在新系统里装mdadm，和修改一个配置文件。Raid所有配置完成，下面正常安装就行。
- 
+
   ```shell
   pacman -S mdadm
 
@@ -376,7 +378,7 @@ arch-chroot /mnt
   HOOKS=(base udev autodetect keyboard modconf block mdadm_udev filesystems fsck) # 在HOOKS这行添加 mdadm_udev
 
   mkinitcpio -p linux
-  ```  
+  ```
 </details>
 
 ## 校准时间
@@ -449,7 +451,7 @@ passwd ＃ 设置密码
 前面设置的网络连接只在这次安装过程中生效，还需要给刚装好的系统装联网软件。下面只写基本的连接wifi的部分，DSL，移动网络之类的连接可以参考[这篇详细教程](https://linuxhint.com/arch_linux_network_manager/)
 ```shell
 pacman -S wpa_supplicant wireless_tools networkmanager network-manager-applet
-pacman -S nm-connection-editor 
+pacman -S nm-connection-editor
 systemctl enable NetworkManager.service
 systemctl disable dhcpd.service # 如果说dhcpd not found也没关系，目标就是把他关了
 systemctl enable wpa_supplicant.service
@@ -486,7 +488,7 @@ systemctl enable lightdm
 
 ### KDE
 ```shell
-pacman -S xorg plasma plasma-wayland-session kde-applications 
+pacman -S xorg plasma plasma-wayland-session kde-applications
 systemctl enable sddm.service
 ```
 ![image](https://user-images.githubusercontent.com/29757093/155061233-99de26b9-e02c-41e3-ae7d-a7c2050b0723.png)
@@ -495,7 +497,7 @@ systemctl enable sddm.service
 
 有时候新安装桌面可能遇到登录循环的情况，开机后正常输入用户名密码，结果回车登录之后又回到输入密码界面。这种情况可能是因为没有 /home/[用户名] 目录或者用户没有这个目录的权限，创建试一下。
 ```shell
-mkdir /home/[用户名] 
+mkdir /home/[用户名]
 chown -R [用户名]:[用户名] /home/[用户名]
 ```
 
