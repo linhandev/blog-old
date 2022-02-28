@@ -240,7 +240,7 @@ point spread function：一个点的输入一般result in一个区域，point sp
 ![image](https://user-images.githubusercontent.com/29757093/154567903-a7563d93-3f26-418e-8db5-4c38e983fc9c.png)
 
 
-# 采样插值
+# 采样&插值
 
 ![sample](/assets/img/post/Note/sample.png)
 - 采样：连续到离散
@@ -248,42 +248,57 @@ point spread function：一个点的输入一般result in一个区域，point sp
 
 符号
 - 采样间隔：$\Delta_x$，$\Delta_y$
-- 采样频率：$f_{s,x}=\frac{1}{\Delta_x}$，$f_{s,y}=\frac{1}{\Delta_y}$
+- 采样频率：$f_{s,x}=\frac{1}{\Delta_x}$，$f_{s,y}=\frac{1}{\Delta_y}$，时间维度的采样率fps
+- nyquist频率：$f_{m,x}$，$f_{m,x}$，采样频率的一半
 - 连续图像：$f(x, y)$
 - 采样图像：$f_s(m, n)$
 - 重建图像：$\hat{f}(x, y)$
 
-采样：时域乘impulse train;频域卷impulse train。(impulse train 傅立叶还是impulse train)
-重建：频域乘低通，频率=1/2采样率;时域和sinc卷积(把sinc放在每一个像素上，幅度是像素强度值，最后求和;x,y位置的重建值是所有采样点的值加权平均，权重是2d sinc在x,y方向距离上的取值)
+- 采样
+  - 采样频率大于1/2信号最大频率
+  - 时域乘脉冲序列，间隔 $1/\Delta$，幅度1
+  - 频域卷脉冲序列，间隔 $\Delta$，幅度 $\frac{1}{\Delta_x\Delta_y}$
+    - 脉冲序列傅立叶还是脉冲序列
+    - 通过加频域的多个信号返回时域信号，频域信号的幅度小
+- 重建
+  - 频域乘低通，截止频率 = 1/2采样频率，幅度 $\Delta_x\Delta_y$
+  - 时域和sinc卷积
+    - 把sinc放在每一个像素上，幅度是像素强度，最后求和
+    - 采样图像里m，n对重建图像x，y的贡献权重是2d sinc在x,y和m，n距离位置的取值
 
-$f_x(m, n)=f(m\Delta_x, n\Delta_y) \quad m=0,1,...,M, \quad n=0,1,...,N$
+采样：采样结果M行N列
+$$
+f_s(m, n)=f(m\Delta_x, n\Delta_y) \quad m=0,1,...,M, \quad n=0,1,...,N \\
+$$
 
-采样可以看作 原图*impulse train：
+脉冲序列：
 $$
 \begin{aligned}
 p(x, y)&=\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} \delta\left(x-m \Delta_{x}, y-n \Delta_{y}\right)\\
 \end{aligned}
 $$
 
-impulse傅立叶：
-- 1D
+脉冲序列的傅立叶：
+- 1D：采样结果长度为N
+
 $$
 \begin{aligned}
-&p(t)=\sum_{n} \delta(t-n \Delta t) \Leftrightarrow P(u)=\frac{1}{\Delta t} \sum_{n} \delta\left(u-n f_{s}\right) \\
+&p(t)=\sum_{n=0}^{N-1} \delta(t-n \Delta t) \Leftrightarrow P(u)=\frac{1}{\Delta t} \sum_{n=0}^{N-1} \delta(u-nf_s) \\
 &\text { where } f_{s}=\frac{1}{\Delta t}
 \end{aligned}
 $$
+
+频率是 $f_s$，所以频率是 $f_s$ 整数倍的都过采样点
 - 2D
+
 $$
 \begin{aligned}
 &p(x, y)=\sum_{m, n} \delta(x-m \Delta x, y-n \Delta y) \Leftrightarrow P(u, v)=\frac{1}{\Delta x \Delta y} \sum_{m, n} \delta\left(u-m f_{s, x}, v-n f_{s, y}\right) \\
-&\text { where } f_{s, x}=\frac{1}{\Delta x}, f_{s, y}=\frac{1}{\Delta y}
+&\text { where } f_{s, x}=\frac{1}{\Delta x}， f_{s, y}=\frac{1}{\Delta y}
 \end{aligned}
 $$
 
-时域相乘，频域卷积
-
-- 采样时域：信号 x impulse train
+- 采样时域：信号 $\times$ 脉冲序列
 $$
 \begin{aligned}
 \tilde{f_{s}}(x, y)&=f(x, y) \times p(x, y)\\
@@ -300,6 +315,7 @@ P(u, v)&=\frac{1}{\Delta x \Delta y} \sum_{m, n} \delta\left(u-m f_{s, x}, v-n f
 &\text { where } f_{s, x}=\frac{1}{\Delta x}, f_{s, y}=\frac{1}{\Delta y}\\
 \end{aligned}
 $$
+这里如果采样频率不大于固有频率的二倍，频域信号就会有重合，就会有伪影
 
 - 重建时域：采样信号 * 2d sinc
 $$
@@ -319,9 +335,9 @@ h(x, y)&=\frac{\sin \left(\pi f_{s, x} x\right)}{\pi f_{s, x} x} \frac{\sin \lef
 $$
 
 
-$采样率低\to时域间隔大\to频域间隔小\to和信号卷积有叠加\to伪影\to重建信号比原信号频率低\to采样完图像里能看到比原图周期低的信号$
+$采样率低\to空间间隔大\to频域间隔小\to和冲击卷完有叠加\to采样完图像里能看到比原图周期低的信号\to伪影\to重建信号比原信号频率低$
 
-采样的频率应该大于信号频率的2倍，一个周期至少2个点
+采样的频率应该大于信号固有频率的2倍，一个周期至少2个点
 
 ![1d aliasing ](/assets/img/post/Note/1d-aliasing.png)
 
@@ -338,13 +354,107 @@ jaggie
 ![image downsample](/assets/img/post/Note/image-downsample.png)
 
 
-重建滤波不可能是理想低通，时域无限长。Nyquist filter 性质：
-- 低通
-- 递减：离一个点越远，对这个点重建的贡献应该越小
+插值滤波不可能是理想低通，那样空间域无限大。Nyquist filter 性质：
+- 低通：超过采样频率一半的信号都是重复的
+- 递减：离一个点越远，对这个点插值的贡献应该越小
 - 偶函数
-- 可分 [//]: # (TODO:)
-- $h(0,0)=1$,  $h(m\Delta_x, n\Delta_y)=0$：这样采样值在重建图像里不会变
+- 可分： $h(x,y)=h_v(x) \cdot h_h(y)$，减少计算
+- $h(0,0)=1$,  $h(m\Delta_x, n\Delta_y)=0$：采样值原样进入重建图像
 
-prefilter，sampling filter：实际图像里可能包含非常高频的信号，在采样之前先过一个截止频率$f_c=\frac{f_s}{2}$的滤波器
+![Nyquist Filters](/assets/img/post/Note/nyquist-filters.png)
 
-![prefilter](/assets/img/post/Note/prefilter.png) 
+prefilter，sampling filter：实际图像里可能包含非常高频的信号，在采样之前先过一个截止频率 $f_c=\frac{f_s}{2}$ 的滤波器。不做prefilter可以保留更多细节，但是会有低频的纹理
+
+![prefilter](/assets/img/post/Note/prefilter.png)
+
+- aliasing：采样前滤波带来的问题。原信号经过prefilter还是有高频信号，带来比1/2采样频率低的噪声。体现在直的线变阶梯，条纹有比原来频率低的。
+- imaging：插值的滤波器带来的问题。不是理想低通，截止频率之外还是有信号，带来比1/2采样频率高的噪声
+![aliasing imaging](/assets/img/post/Note/aliasing-imaging.png)
+
+相机
+- 相邻两个同颜色传感器中心的距离是采样间隔
+- 传感器的输出是一个面积上的光强总数，相当于采样前滤波去掉高频信号
+
+aliasing 例子 https://www.red.com/red-101/cinema-temporal-aliasing
+
+观察的时候眼睛和脑子做插值的低通滤波
+
+角频率：看的时候重要的是单位角度的频率
+- 屏幕越远频率越高
+- 屏幕越大频率越低
+
+![angular frequency](/assets/img/post/Note/angular-frequency.png)
+
+$$
+\begin{aligned}
+&\theta=2 \arctan (h / 2 d)(\operatorname{radian}) \approx 2 \mathrm{~h} / 2 \mathrm{~d}(\operatorname{radian})=\frac{180}{\pi} \frac{h}{d}(\text { degree }) \\
+&\mathrm{f}_{\theta}=\frac{\mathrm{f}_{s}}{\theta}=\frac{\pi}{180} \frac{d}{h} \mathrm{f}_{s}(\text { cycle/degree })
+\end{aligned}
+$$
+
+![eye spatial](/assets/img/post/Note/eye-spatial.png)
+
+![eye temperal](/assets/img/post/Note/eye-temperal.png)
+
+- 时间上通常能看到60hz，实际可以更快因为眼睛会跟着物体动，相对频率变小。显示60hz的信号需要120hz的采样率。
+- 空间上通常能看到30 cycle per degree，空间上应该捕捉到60 cycle per degree
+- 时间上频率越高，空间上同样角频率的信号越不敏感。时间快的场景分辨率就可以低
+- 亮度越高，能分辨的帧率越高
+
+![cpd example](/assets/img/post/Note/cpd-example.png)
+
+眼睛对亮度更敏感，4个Y不需要4个cbcr
+
+![4210](/assets/img/post/Note/4210.png)
+
+
+下采样周期变短，频率变高，可能会alias，下采样前先过一个half band filter，cutoff频率应该是固有频率1/4
+
+![down half band](/assets/img/post/Note/down-half-band.png)
+
+upsample：填0，卷积
+![upsample process](/assets/img/post/Note/upsample-process.png)
+$$
+\begin{aligned}
+&\tilde{f}(m, n)=\left\{\begin{array}{cc}
+f(m / K, n / K) & \text { if } m, n \text { are multiple of } K \\
+0 & \text { otherwise }
+\end{array}\right. \\
+&f_{u}(k, l)=\sum_{k, l} \tilde{f}(m, n) h(k-m, l-n)=\tilde{f}(k, l) * h(k, l)
+\end{aligned}
+$$
+- nearest neighbor：新值取决于跟原图里哪个像素最近
+  - $\mathrm{O}\left[\mathrm{m}^{\prime}, \mathrm{n}^{\prime}\right]=\mathrm{I}[(\text { int })(\mathrm{m}+0.5),(\text { int })(\mathrm{n}+0.5)], \mathrm{m}=\mathrm{m}^{\prime} / \mathrm{M}, \mathrm{n}=\mathrm{n}^{\prime} / \mathrm{M}$
+- bilinear 双线性内插值：新值用原图里最近的四个点线性加权平均
+  ![seperate bilinear](/assets/img/post/Note/seperate-bilinear.png)
+  - 分开插值
+    - 比如先沿行算整行算新点的所在的列应该是多少
+    F[m,n’]=(1-a)*I[m,n]+a*I[m,n+1], a=n’-n.
+    - 之后再沿整列算新点所在的行应该是多少
+    O[m’,n’]=(1-b)*F[m’,n]+b*F[m’+1,n], b=m’-m
+  - 整体插值
+    - 每个点的权重是新点和对角点组成矩形的面积
+    O[m’,n’]=(1-a)*(1-b)*I[m,n]+a*(1-b)*I[m,n+1]+(1-a)*b*I[m+1,n]+a*b*I[m+1,n+1]
+- bicubic 双三次插值：新值用原图里最近16个点线性加权平均，系数里最高是a和b的立方
+$$
+\begin{aligned}
+F\left[m^{\prime}, n\right] &=-b(1-b)^{2} I[m-1, n]+\left(1-2 b^{2}+b^{3}\right) I[m, n]+b\left(1+b-b^{2}\right) I[m+1, n]-b^{2}(1-b) I[m+2, n] \quad
+m= (int) \frac{m^{\prime}}{M}, \quad b=\frac{m^{\prime}}{M}-m \\
+
+O\left[m^{\prime}, n^{\prime}\right]&=-a(1-a)^{2} F\left[m^{\prime}, n-1\right]+\left(1-2 a^{2}+a^{3}\right) F\left[m^{\prime}, n\right]+a\left(1+a-a^{2}\right) F\left[m^{\prime}, n+1\right]-a^{2}(1-a) F\left[m^{\prime}, n+2\right],
+where n= (int) \frac{n^{\prime}}{M}, a=\frac{n^{\prime}}{M}-n
+\end{aligned}
+$$
+
+![bicubic interpolation](/assets/img/post/Note/bicubic-interpolation.png)
+
+上采样周期变长，频率变小，可能会引入高频信号，上采样之后过一个half band filter
+![up half band](/assets/img/post/Note/up-half-band.png)
+
+
+H hermission 转制+共扼
+
+
+![typo](/assets/img/post/Note/typo.png)
+
+rou d
