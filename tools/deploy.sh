@@ -121,7 +121,7 @@ with:
   path: |
     ~/cache
     !~/cache/exclude
-  key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+  key: ${{ runner.os }}-"new"-${{ hashFiles('**/lockfiles') }}
 
 main() {
   init
