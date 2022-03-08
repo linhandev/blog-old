@@ -117,12 +117,6 @@ deploy() {
   fi
 }
 
-with:
-  path: |
-    ~/cache
-    !~/cache/exclude
-  key: ${{ runner.os }}-"new"-${{ hashFiles('**/lockfiles') }}
-
 main() {
   init
   build
