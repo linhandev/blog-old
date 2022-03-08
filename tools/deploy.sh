@@ -6,6 +6,7 @@
 #
 # Usage: See help information
 
+
 set -eu
 
 PAGES_BRANCH="gh-pages"
@@ -116,11 +117,17 @@ deploy() {
   fi
 }
 
+with:
+  path: |
+    ~/cache
+    !~/cache/exclude
+  key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
 main() {
   init
   build
   # test
-  
+
   resume_site_dir
 
   if $_opt_dry_run; then
