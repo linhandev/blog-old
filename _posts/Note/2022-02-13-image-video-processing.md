@@ -462,20 +462,42 @@ rou d
 
 
 # 变换&压缩
-N维空间 $C^N$ 中的所有向量都可以用N个线性无关的基底变形变换得来。
+N维空间里的所有向量都可以用N个线性无关的基底变换得来。
 
-- 内积：一个向量求共扼，和另一个对应位置相乘
-  - $a\cdot b=|a||b|cos<a,b>$
+概念
+- 内积：一个求共扼，和另一个对应位置相乘求和。几D都是，几D结果都是标量
+  - $A=(a_0, a_1, ..., a_N)，B=(b_0, b_1, ..., b_N)，A\cdot B=a_0*b_0+a_1*b_1+...+a_N*b_N$
+  - $A\cdot B=trace(AB^H)=trace(BA^H)$，trace是主对角线元素和，i,j相等的位置元素和
+  - 几何意义是投影
+    - $A\cdot B=|A||B|cos<A,B>$
+- 外积 [//]: # (TODO:)
 - 单位正交基底：线性无关，都是单位长度，两两垂直
 - 共轭转制：$X^H=(X^{*})^T$ hermitian
 - 酉矩阵：单位正交列向量组成的矩阵，unitary matrix
   - $酉矩阵^{-1}=酉矩阵^{H}$
-  - $酉矩阵^H\cdot酉矩阵=酉矩阵\cdot酉矩阵^H=I$
+  - 酉矩阵U：$U^H U=U U^H=I$
 
-一组基底B，必须可逆，每个基底列向量；权重/变换t，列向量；行向量f
+符号
+- N维
+- $b_i$：一个基底，列向量
+- B：$[b_0, b_1, ..., b_{N-1}]$。基底列向量组成的N*N矩阵，必须可逆
+  - U：单位正交基底
+    - 通常排序从$b_0$到$b_{N-1}$ 频率越来越高
+- S：信号列向量
+- T：变换系数列向量，$S=B\cdot T$
+- $E(\mathbf{X})$： 期望。$\mathbf{X}=(X_1, X_2, .., X_M)$， $E(\mathbf{X})$ 是 $\mathbf{X}$ 的期望，和 $\mathbf{X}$ 里的一个 $X$ 一样大
+- $Var(\mathbf{X})$：方差。$\sum \{X-E(\mathbf{X})\}\cdot\{X-E(\mathbf{X})\}^H$。每个$X$和所有$X$期望做差，这个差和自己的hermission乘，求和。结果和$X$一样大
 $$
-B=[h_0, h_1, ... , h_{N-1}] \\
-t = \begin{bmatrix}
+b_i = \begin{bmatrix}
+b_{i,0} \\
+b_{i,1} \\
+.\\
+.\\
+.\\
+b_{i,N-1} \\
+\end{bmatrix}，
+B=[b_0, b_1, ... , b_{N-1}] \\
+T = \begin{bmatrix}
 t_0 \\
 t_1 \\
 .\\
@@ -483,20 +505,45 @@ t_1 \\
 .\\
 t_{N-1}
 \end{bmatrix} \\
-f=Bt \\
-A=B^{-1}\\
-t=B^{-1}f=Af
-$$
-如果一组基底单位正交，B是酉矩阵
-$$
-B^{-1} = B^H \\
-BB^{-1}=B^{-1}B=I \Rightarrow B^HB=BB^H=I
-f=Bt \\
-t=B^{-1}f=B^Hf
+S = \begin{bmatrix}
+s_0 \\
+s_1 \\
+.\\
+.\\
+.\\
+s_{N-1}
+\end{bmatrix} \\
 $$
 
+- 逆变：变换系数 $\rightarrow$ 信号，合成
+  - 信号在每个基底上的分量乘那个基底，横向做和
+$$
+S=BT
+$$
 
-Hadmard变换，从$h_0$到$h_3$变化速度越来越快
+- 正变：信号 $\rightarrow$ 变换系数，分解
+  $$
+  T=B^{-1}S
+  $$
+  - 对单位正交基底$U$，$U^{-1}=(U^*)^T$，记为$U^{H}$
+  $$
+  T=U^{-1}S=U^{H}S
+  $$
+
+变换理解：在单位正交基底U上
+- 正变：$T=U^HS$
+  - $U^H$中第k行是第k个基底$u_k$的共轭
+  - 矩阵相乘的时候，$U^H$第k行和信号对应位置相乘求和
+  - 就是 $u_k^*$ 和信号对应位置相乘求和
+  - 就是 $u_k\cdot S$
+  - 就是信号在 $u_k$ 上的投影
+- 逆变：$S=UT$
+  - T中的第k个数是信号在第k个基底上的投影
+  - U的第k列是第k个基底
+  - UT可以看作U的第k列先乘T的第k个数，得到k个列矩阵之后再每行平均
+
+一些变换
+- Hadmard
 $$
 \begin{aligned}
 &\mathbf{h}_{0}=\left[\begin{array}{l}
@@ -534,7 +581,7 @@ t_{3}=-1
 \end{aligned}
 $$
 
-离散傅立叶：第k个基底的变换速度是k圈
+- 离散傅立叶 DFT：第k个基底的频率是k圈，从一圈里采样N个点
 $$
 \begin{aligned}
 &F(k)=\frac{1}{\sqrt{N}} \sum_{n=0}^{N-1} f(n) e^{-j 2 \pi \frac{k n}{N}}, \quad k=0,1, \ldots, N-1 \\
@@ -554,7 +601,7 @@ e^{j 2 \pi \frac{k}{N}} \\
 \end{aligned}
 $$
 
-离散余弦变换 DCT
+- 离散余弦变换 DCT
 $$
 \begin{aligned}
 &h_{k}(n)=\alpha(k) \cos \left[\frac{(2 n+1) k \pi}{2 N}\right] \\
@@ -564,12 +611,113 @@ $$
 $$
 
 $$
-正变: T(k)=\sum_{n=0}^{N-1} f(n) h_{k}(n) \\
-逆变: f(n)=\sum_{u=0}^{N-1} T(k) h_{k}(n)
+T(k)=\sum_{n=0}^{N-1} f(n) h_{k}(n) \\
+f(n)=\sum_{u=0}^{N-1} T(k) h_{k}(n)
 $$
+[//]: # (TODO:整理符号)
 
-- 2D可分离基底：2D基底由1D基底矩阵相乘$h_ah_b^T$或者向量外积得来的。
-- 2D单位正交基底：内积用一个共轭和另一个对应位置相乘求和。1D单位正交，两两外积的2D也单位正交
+单位正交变换的统计性质
+- $t_0=Avg(S)$
+  - 第一个基底$u_0$是单位长度，并且所有分量相等。$t_0$就是整个信号S的平均数
+- $U^HE(\mathbf{S})=E(\mathbf{T})，UE(\mathbf{T})=E(\mathbf{S})$
+  - 多个信号经过正变得多个系数，信号们的均值 $E(\mathbf{S})$ 和系数们的均值 $E(\mathbf{T})$ 和一个基底都一样大
+  - 系数的期望就是样本的期望分解，样本的期望就是系数的期望合成
+- $U^HVar(\mathbf{S})U=Var(\mathbf{T})，UVar(\mathbf{T})U^H=Var(\mathbf{S})$
+  - $X$ 是N维向量，$Var(\mathbf{X})$ 是N*N维向量，$Var(\mathbf{X})[i,j]$ 代表一堆 $X$，就是 $\mathbf{X}$ 中第i个维度和第j个维度的相关性
+  - 信号的方差先投影到各个基底上，得到信号的方差在各个基底上的系数，之后合成系数的方差；系数的方差先合成一个信号，得到每个系数对每个系数方差的信号，之后投影到各个基底上得到信号的方差
+  - 样本的方差就是系数的方差先合成再右乘$U^H$，系数的方差就是样本的方差先分解再右乘$U$
+  - 一组好的基底系数的方差应该尽可能对角
+<!-- - $Var(\mathbf{S})[i, j]$ 是信号第i维度和第j维度间的方差，这个矩阵的第j列是各个维度和第j个维度间的方差
+- 定义 $P=U^HVar(S)$ ，P的第j列是 $Var(\mathbf{S})$ 中的第j列分别和每个基底做内积得来。所以P的第j列就是信号各个维度和第j个维度间的方差在各个基底上的投影
+- P[a,j]是信号各个维度和第j个维度间的方差在第a个基底上的投影
+- P中的第a行是信号各个维度和各个维度的方差在第a个基底上的投影
+- 最后 PU[a,b] 是P的第a行和U的第b列对应位置相乘求和，是把信号的方差在第a个基底上的投影和第b个基底按位置相乘， -->
+[//]: # (TODO:左乘和右乘的含义)
+- 单位正交基底，信号平方和跟系数平方和相同；非单位正交基底，所有信号内的方差和所有系数内的方差和相同
+  - 平方是 $\sqrt{(x \times x^*)}$
+  - 丢掉一些高频分量，信号每个维度误差的平方和=丢掉的分量的系数平方和
+
+比如对基底和信号
+$$
+\begin{aligned}
+&\mathbf{h}_{0}=\left[\begin{array}{l}
+1 / 2 \\
+1 / 2 \\
+1 / 2 \\
+1 / 2
+\end{array}\right], \mathbf{h}_{1}=\left[\begin{array}{c}
+1 / 2 \\
+1 / 2 \\
+-1 / 2 \\
+-1 / 2
+\end{array}\right], \mathbf{h}_{2}=\left[\begin{array}{c}
+1 / 2 \\
+-1 / 2 \\
+-1 / 2 \\
+1 / 2
+\end{array}\right], \mathbf{h}_{3}=\left[\begin{array}{c}
+1 / 2 \\
+-1 / 2 \\
+1 / 2 \\
+-1 / 2
+\end{array}\right], \\
+&\mathbf{f}=\left[\begin{array}{l}
+1 \\
+2 \\
+3 \\
+4
+\end{array}\right] \Rightarrow\left\{\begin{array}{l}
+t_{0}=5 \\
+t_{1}=-2 \\
+t_{2}=0 \\
+t_{3}=-1
+\end{array}\right.
+\end{aligned}
+$$
+信号和系数的平方和都是30。只用$h_0$和$h_1$
+$$
+\begin{gathered}
+\hat{f}=t_{0} h_{0}+t_{1} h_{1}=\frac{5}{2}\left[\begin{array}{l}
+1 \\
+1 \\
+1 \\
+1
+\end{array}\right]-\frac{2}{2}\left[\begin{array}{c}
+1 \\
+1 \\
+-1 \\
+-1
+\end{array}\right]=\frac{1}{2}\left[\begin{array}{l}
+3 \\
+3 \\
+7 \\
+7
+\end{array}\right], \mathrm{e}=f-\hat{f}=\frac{1}{2}\left[\begin{array}{l}
+2 \\
+4 \\
+6 \\
+8
+\end{array}\right]-\frac{1}{2}\left[\begin{array}{l}
+3 \\
+3 \\
+7 \\
+7
+\end{array}\right]=\frac{1}{2}\left[\begin{array}{c}
+-1 \\
+1 \\
+-1 \\
+1
+\end{array}\right] \\
+||e||^2=1, t_{2}^{2}+t_{3}^{2}=1
+\end{gathered}
+$$
+e的平方和跟没用的两个系数的平方和都是1
+
+
+- 2D可分离基底：一套2D基底由一套1D基底矩阵相乘$h_ah_b^T$或者向量外积得来
+  - 不是单个基底是可分矩阵，是用一套1D基底$h_ah_b^T$生成一套2D基底
+- 2D单位正交基底：和自己内积和都是1，和别人内积和都是0
+
 $$
 \begin{aligned}
 \mathbf{h}_{0}=\left[\begin{array}{l}
@@ -610,3 +758,165 @@ $$
 - 可分：$2N^3$
   - 每行做1D变换，得到N个中间结果。一行$N$次乘法，每个图$N^2$，一共N个1D基底，总共$N^3$次乘法
   - 对每个中间结果每列做1D变换，得到$N^2$个最终结果。也是$N^3$次乘法
+
+
+按照zig-zag顺序频率变高，低频信号的方差大，变化更多。只保留低频分量重建误差小
+
+![order](/assets/img/post/Note/order.png)
+
+![variance](/assets/img/post/Note/variance.png)
+
+![dct](/assets/img/post/Note/dct.png)
+
+扔掉了高频分量，斜线变得台阶
+
+最好的变换基底
+
+好的变换基底
+- 系数相关性小
+- 能量集中：系数里少量大的，其他都接近0
+- 计算简单：2D会选比较小的维度，否则计算量很大
+- 2D可分离
+
+用于
+- 压缩
+- 降低特征维度
+- 降噪
+
+KLT变换
+
+信号相关，基底是信号协方差矩阵的正交特征矢量。系数就是特征值
+
+PCA
+
+变换编码流程
+
+![transform coding](/assets/img/post/Note/transform-coding.png)
+
+量化
+
+![quantify range](/assets/img/post/Note/quantify-range.png)
+
+![quantify](/assets/img/post/Note/quantify.png)
+
+编码
+- 定长
+- 变长：出现的越多，编码越短
+
+比特率：每个情况的概率*编码这个情况的bit数
+信息熵：$H(f)=-\sum_k p(k)log_2p(k)$，每个概率*$log_2(概率)$的和的相反数。信息熵是编码这个概率分布最少需要的bit数
+
+K=2
+- 概率[1,0], [0,1]的信息熵是0
+- 概率分布越平均，信息熵越大，[0.5, 0.5]最大，信息熵是1
+
+![huffman](/assets/img/post/Note/huffman.png)
+
+从概率最低的两个开始，合并成一个情况，合并后的概率是这两个的和，一个给1，一个给0。反复，页节点给1，子树给0。
+
+有时候两个情况经常固定顺序出现，这样编码连续的两个值，$K^2$种情况可能比编码K种情况比特率低
+
+
+## JPEG
+
+JPEG
+- 所有值-128
+- 8*8 DCT
+- DC信号
+  - 值是基于前一格推测这一格DC的误差（比如推测相等），不是实际的DC值
+  - 编码两部分：（定长编码方法，定长编码下的位置）
+  ![dc coding](/assets/img/post/Note/dc-coding.png)
+
+- 量化
+  - 低频信号量化间隔小，高频信号量化间隔大
+    - 不是朝着MSE优化，是要看起来更好
+    - 间隔是人看不同图片试出来的
+    ![jpeg quantify](/assets/img/post/Note/jpeg-quantify.png)
+- 行程长度压缩，每个非0值存（和前一个非0值之间多少个0，具体值）
+- 在所有行程长度对上进行编码
+  - huffman：有默认huffman编码表，也可以在图片里带
+  - 算数编码：压缩率高，计算复杂
+    - 除了整体出现频率以外，空间位置上的条件概率也是信息，跟DC一样先推测再记录错误
+
+原图
+![img](/assets/img/post/Note/img.png)
+
+DCT系数
+![dct coef](/assets/img/post/Note/dct-coef.png)
+
+量化结果
+![quant](/assets/img/post/Note/quant.png)
+
+行程长度压缩，顺序是zigzag，先右后下。不是按照行列！
+![runlength](/assets/img/post/Note/runlength.png)
+
+- 黑白图
+  - bpp：bit pre pixel
+  - 调量化间隔控制比特率
+    ![jpeg bw](/assets/img/post/Note/jpeg-bw.png)
+- 彩色
+  - 可以每个channel按黑白处理
+  - 一起处理
+    - 转换成YCbCr
+    - CbCr下采样
+    - 一个16*16块6个块，4 Y，1 Cb，1 Cr
+    - 三个channel DCT参数分布不同，可以给不用的编码表
+    ![ycbcr down](/assets/img/post/Note/ycbcr-down.png)
+    ![color jpeg](/assets/img/post/Note/color-jpeg.png)
+    - 原图3*8bpp
+    ![jpeg color example](/assets/img/post/Note/jpeg-color-example.png)
+- JPEG-LS：无损压缩或基本无损
+- JPEG2000：波长变换，无损
+
+
+## 金字塔
+
+- 上：高斯金字塔
+- 下：拉普拉斯金字塔
+![pyramid](/assets/img/post/Note/pyramid.png)
+
+![pyramid process](/assets/img/post/Note/pyramid-process.png)
+
+用途
+- SIFT：在不同尺度见抽取特征
+- 多尺度特征提取和检测
+- 加速计算
+- 降噪：去掉高层（大图）拉普拉斯图像特征
+- 更自然的图像融合
+
+![pyramid blend](/assets/img/post/Note/pyramid-blend.png)
+
+冗余表示，增加 $\frac{1}{3}N^2$ 数据量
+
+## 小波分析
+- 不冗余
+- 方便重建小图：收到一个尺度就可以重建到一个尺度
+- 在整个图像上进行变换，没有块状伪影
+
+![wavelet low res](/assets/img/post/Note/wavelet-low-res.png)
+
+Harr小波分析
+![harr](/assets/img/post/Note/harr.png)
+
+
+$h 0$ : averaging, $[1,1] / \sqrt{2} ; \quad h 1$ : difference, $[1,-1] / \sqrt{2}$;
+$$
+g 0=[1,1] / \sqrt{2} ; \quad g 1=[-1,1] / \sqrt{2}
+$$
+- 低频：平均
+- 高频：做差
+
+![wavelet filter bank](/assets/img/post/Note/wavelet-filter-bank.png)
+
+![wavelet image ](/assets/img/post/Note/wavelet-image.png)
+行列分别进行，一个阶段包含一次行一次列，出四张图。多阶段继续分析LL
+
+![harr abcd](/assets/img/post/Note/harr-abcd.png)
+
+![wavelet multistage](/assets/img/post/Note/wavelet-multistage.png)
+
+![wavelet 1](/assets/img/post/Note/wavelet-1.png)
+
+![wavelet mul](/assets/img/post/Note/wavelet-mul.png)
+
+降噪
