@@ -458,3 +458,155 @@ H hermission 转制+共扼
 ![typo](/assets/img/post/Note/typo.png)
 
 rou d
+
+
+
+# 变换&压缩
+N维空间 $C^N$ 中的所有向量都可以用N个线性无关的基底变形变换得来。
+
+- 内积：一个向量求共扼，和另一个对应位置相乘
+  - $a\cdot b=|a||b|cos<a,b>$
+- 单位正交基底：线性无关，都是单位长度，两两垂直
+- 共轭转制：$X^H=(X^{*})^T$ hermitian
+- 酉矩阵：单位正交列向量组成的矩阵，unitary matrix
+  - $酉矩阵^{-1}=酉矩阵^{H}$
+  - $酉矩阵^H\cdot酉矩阵=酉矩阵\cdot酉矩阵^H=I$
+
+一组基底B，必须可逆，每个基底列向量；权重/变换t，列向量；行向量f
+$$
+B=[h_0, h_1, ... , h_{N-1}] \\
+t = \begin{bmatrix}
+t_0 \\
+t_1 \\
+.\\
+.\\
+.\\
+t_{N-1}
+\end{bmatrix} \\
+f=Bt \\
+A=B^{-1}\\
+t=B^{-1}f=Af
+$$
+如果一组基底单位正交，B是酉矩阵
+$$
+B^{-1} = B^H \\
+BB^{-1}=B^{-1}B=I \Rightarrow B^HB=BB^H=I
+f=Bt \\
+t=B^{-1}f=B^Hf
+$$
+
+
+Hadmard变换，从$h_0$到$h_3$变化速度越来越快
+$$
+\begin{aligned}
+&\mathbf{h}_{0}=\left[\begin{array}{l}
+1 / 2 \\
+1 / 2 \\
+1 / 2 \\
+1 / 2
+\end{array}\right], \mathbf{h}_{1}=\left[\begin{array}{c}
+1 / 2 \\
+1 / 2 \\
+-1 / 2 \\
+-1 / 2
+\end{array}\right], \mathbf{h}_{2}=\left[\begin{array}{c}
+1 / 2 \\
+-1 / 2 \\
+-1 / 2 \\
+1 / 2
+\end{array}\right], \mathbf{h}_{3}=\left[\begin{array}{c}
+1 / 2 \\
+-1 / 2 \\
+1 / 2 \\
+-1 / 2
+\end{array}\right] \\
+&\mathbf{f}=\left[\begin{array}{l}
+1 \\
+2 \\
+3 \\
+4
+\end{array}\right] \Rightarrow\left\{\begin{array}{l}
+t_{0}=5 \\
+t_{1}=-2 \\
+t_{2}=0 \\
+t_{3}=-1
+\end{array}\right.
+\end{aligned}
+$$
+
+离散傅立叶：第k个基底的变换速度是k圈
+$$
+\begin{aligned}
+&F(k)=\frac{1}{\sqrt{N}} \sum_{n=0}^{N-1} f(n) e^{-j 2 \pi \frac{k n}{N}}, \quad k=0,1, \ldots, N-1 \\
+&f(n)=\frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} F(k) e^{j 2 \pi \frac{k n}{N}}, \quad n=0,1, \ldots, N-1
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&h_{k}(n)=\frac{1}{\sqrt{N}} e^{j 2 \pi \frac{k n}{N}}, \quad \text { or } \\
+&\mathbf{h}_{k}=\frac{1}{\sqrt{N}}\left[\begin{array}{c}
+1 \\
+e^{j 2 \pi \frac{k}{N}} \\
+\vdots \\
+\left.e^{j 2 \pi \frac{(N-1) k}{N}}\right]
+\end{array}\right], k=0,1, \ldots, N-1
+\end{aligned}
+$$
+
+离散余弦变换 DCT
+$$
+\begin{aligned}
+&h_{k}(n)=\alpha(k) \cos \left[\frac{(2 n+1) k \pi}{2 N}\right] \\
+&\text { where } \alpha(k)= \begin{cases}\sqrt{1 / N} & k=0 \\
+\sqrt{2 / N} & k=1, \ldots, N-1\end{cases}
+\end{aligned}
+$$
+
+$$
+正变: T(k)=\sum_{n=0}^{N-1} f(n) h_{k}(n) \\
+逆变: f(n)=\sum_{u=0}^{N-1} T(k) h_{k}(n)
+$$
+
+- 2D可分离基底：2D基底由1D基底矩阵相乘$h_ah_b^T$或者向量外积得来的。
+- 2D单位正交基底：内积用一个共轭和另一个对应位置相乘求和。1D单位正交，两两外积的2D也单位正交
+$$
+\begin{aligned}
+\mathbf{h}_{0}=\left[\begin{array}{l}
+1 / \sqrt{2} \\
+1 / \sqrt{2}
+\end{array}\right], \mathbf{h}_{1}=\left[\begin{array}{c}
+1 / \sqrt{2} \\
+-1 / \sqrt{2}
+\end{array}\right] & \\
+\mathbf{H}_{00}=\mathbf{h}_{0} \mathbf{h}_{0}^{T}=\left[\begin{array}{cc}
+1 / 2 & 1 / 2 \\
+1 / 2 & 1 / 2
+\end{array}\right] & \mathbf{H}_{01}=\mathbf{h}_{0} \mathbf{h}_{1}^{T}=\left[\begin{array}{cc}
+1 / 2 & -1 / 2 \\
+1 / 2 & -1 / 2
+\end{array}\right] \\
+\mathbf{H}_{10}=\mathbf{h}_{1} \mathbf{h}_{0}^{T}=\left[\begin{array}{cc}
+1 / 2 & 1 / 2 \\
+-1 / 2 & -1 / 2
+\end{array}\right] & \mathbf{H}_{11}=\mathbf{h}_{1} \mathbf{h}_{1}^{T}=\left[\begin{array}{cc}
+1 / 2 & -1 / 2 \\
+-1 / 2 & 1 / 2
+\end{array}\right]
+\end{aligned}
+$$
+
+2D DCT基底
+
+![2d dct](/assets/img/post/Note/2d-dct.png)
+
+2D hadamard 基底：只有0，1，没有DCT细，但是只需要做加法
+
+![2d hadamard](/assets/img/post/Note/2d-hadamard.png)
+
+计算量
+- 不可分：$N^4$
+  - $N^2$个基底，每个基底内积$N^2$次乘法
+- 可分：$2N^3$
+  - 每行做1D变换，得到N个中间结果。一行$N$次乘法，每个图$N^2$，一共N个1D基底，总共$N^3$次乘法
+  - 对每个中间结果每列做1D变换，得到$N^2$个最终结果。也是$N^3$次乘法
