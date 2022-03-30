@@ -870,23 +870,26 @@ DCT系数
 
 
 ## 金字塔
+- 冗余表示，增加 $\frac{1}{3}N^2$ 数据量
+- 不断下采样
+  - 采样结果是高斯
+  - 用下采样结果推测原尺度，推测和原尺度的參差是拉普拉斯
 
-- 上：高斯金字塔
-- 下：拉普拉斯金字塔
 ![pyramid](/assets/img/post/Note/pyramid.png)
+- 上：高斯金字塔
+- 下：拉普拉斯金字塔，接近0的值很多
 
 ![pyramid process](/assets/img/post/Note/pyramid-process.png)
 
 用途
-- SIFT：在不同尺度见抽取特征
+- SIFT：抽取不同大小的同一特征
 - 多尺度特征提取和检测
-- 加速计算
-- 降噪：去掉高层（大图）拉普拉斯图像特征
+- 在高层抽象上计算更快
+- 降噪：去掉高层（大图）拉普拉斯图像高频特征
+- 压缩
 - 更自然的图像融合
 
 ![pyramid blend](/assets/img/post/Note/pyramid-blend.png)
-
-冗余表示，增加 $\frac{1}{3}N^2$ 数据量
 
 ## 小波分析
 - 不冗余
