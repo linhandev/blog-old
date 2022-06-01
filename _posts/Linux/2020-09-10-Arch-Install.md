@@ -39,7 +39,7 @@ Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十�
 做虚拟机不需要做启动盘，直接用iso。在物理机器上装，[Etcher](https://www.balena.io/etcher/)非常适合做任何Linux发行版的安装盘。使用简单，大都一次成功。选盘的时候注意，别选错了！！！否则可能把正在用的盘格掉。Etcher一般会把不像U盘的设备折叠起来，一般会是最小的一个盘，仔细看一眼肯定不至于选错。即使手上有之前的启动盘也建议做一个新的，Arch更新比较频繁，用旧的启动盘可能会出一些软件兼容的小问题，最新的镜像可以避免麻烦。
 
 # 开始安装
-插入做好的启动盘，重启电脑选择U盘作为启动媒体，一般是按F1，F2, F5，F10，F12中的一个键。启动后选择Arch Linux install medium。
+插入做好的启动盘，重启电脑选择U盘作为启动媒体，一般是按住F1，F2, F5，F10，F12中的一个键时候按电源键。启动后选择Arch Linux install medium。
 
 ![image](https://user-images.githubusercontent.com/29757093/139161890-baedb7c9-3080-4c44-bd33-9d514bbe4ce3.png)
 
