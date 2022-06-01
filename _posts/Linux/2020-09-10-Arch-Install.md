@@ -11,9 +11,9 @@ kramdown:
   parse_block_html: true
 ---
 
-Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容甚至一些基于Arch发行版用户(比如Manjaro)都用的上。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。
+Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，个人感觉很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容对于一些Arch下游的Linux发行版(比如Manjaro)也是有用的。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。
 
-所有折叠的块都是可选步骤，主要有ssh连接，mdadm raid和btrfs文件系统，不需要的话直接跳过。
+下文所有折叠的块都是可选步骤，主要包括ssh连接，mdadm raid和btrfs文件系统，不需要的话直接跳过。
 
 <details>
   <summary markdown='span'>
@@ -25,18 +25,18 @@ Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十�
 </details>
 
 # 硬件需求
-- CPU：x86架构，绝大多数电脑都是
+- CPU：x86架构，绝大多数电脑都是。Arch有专门的ARM版本
 - RAM：512M以上
 - 硬盘：2G以上
-- 网：插网线比较简单，wifi也可
-- U盘：做虚拟机不需要。8G肯定够用，镜像不到1G。读写速度主要影响做启动盘的时间，安装过程联网下载比较多，从U盘中读写比较少
+- 网：wifi就行，查网线更简单
+- U盘：做虚拟机不需要。8G肯定够用，镜像不到1G。读写速度主要影响做启动盘的时间，安装过程中联网下载比较多，从U盘中读写比较少
 
 # iso
-[Arch官方镜像列表](https://archlinux.org/download/)里有所有的iso下载地址，国内从[清华源](https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/2022.02.01/)下一般比较快。文件名是 `archlinux-年月日-x86_64.iso`，蓝色那行
+[Arch官方镜像列表](https://archlinux.org/download/)里有所有的iso下载地址，国内从[清华源](https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/latest/)下一般比较快。文件名是 `archlinux-年月日-x86_64.iso`，蓝色那行
 
-![image](https://user-images.githubusercontent.com/29757093/155031388-1a5cadcc-135c-4831-bb24-53e2defbbf89.png)
+![image](https://user-images.githubusercontent.com/29757093/171315041-335255a7-8c44-4b4d-86f8-c6f03b5ba055.png)
 
-做虚拟机不需要做启动盘，直接用iso。在物理机器上装，[Etcher](https://www.balena.io/etcher/)非常适合做任何Linux Distro的安装盘。使用简单，一般一次成功。选盘的时候注意，别选错了！！！否则可能把正在用的盘格掉。Etcher一般会把不像U盘的设备折叠起来，仔细看一眼肯定不至于选错。即使手上有之前的启动盘也建议做一个新的，Arch更新比较频繁，用旧的启动盘可能会出一些软件兼容的小问题，用最新的镜像可以避免麻烦。
+做虚拟机不需要做启动盘，直接用iso。在物理机器上装，[Etcher](https://www.balena.io/etcher/)非常适合做任何Linux发行版的安装盘。使用简单，大都一次成功。选盘的时候注意，别选错了！！！否则可能把正在用的盘格掉。Etcher一般会把不像U盘的设备折叠起来，一般会是最小的一个盘，仔细看一眼肯定不至于选错。即使手上有之前的启动盘也建议做一个新的，Arch更新比较频繁，用旧的启动盘可能会出一些软件兼容的小问题，最新的镜像可以避免麻烦。
 
 # 开始安装
 插入做好的启动盘，重启电脑选择U盘作为启动媒体，一般是按F1，F2, F5，F10，F12中的一个键。启动后选择Arch Linux install medium。
