@@ -95,7 +95,7 @@ quit # 退出iwctl
   启动盘的live系统不能复制，一些命令手打比较麻烦。可以考虑用另一台机器ssh到要安装的机器上，方便一点。
 
   ```shell
-  pacman -Syy openssh # 安装ssh
+  # pacman -Syy openssh # 安装ssh，最新的arch iso已经带openssh了，不需要装
   systemctl start sshd # 启动ssh服务
   passwd root # 给root设置密码
   ip a # 查看机器ip
