@@ -1,0 +1,325 @@
+<!DOCTYPE html><html lang="en" data-mode="dark" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="Arch Linux安装" /><meta name="author" content="Lin Han" /><meta property="og:locale" content="en" /><meta name="description" content="Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，个人感觉很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容对于一些Arch下游的Linux发行版(比如Manjaro)也是有用的。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。" /><meta property="og:description" content="Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，个人感觉很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容对于一些Arch下游的Linux发行版(比如Manjaro)也是有用的。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。" /><link rel="canonical" href="https://linhandev.github.io//posts/Arch-Install/" /><meta property="og:url" content="https://linhandev.github.io//posts/Arch-Install/" /><meta property="og:site_name" content="Lin’s Blog" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2021-09-10T00:00:00+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Arch Linux安装" /><meta name="twitter:site" content="@linhandev" /><meta name="twitter:creator" content="@Lin Han" /><meta name="google-site-verification" content="StdaX-aj1Cn6KORrAbSA-lotFcfC2BiWqXKNNjjDrYY" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Lin Han"},"dateModified":"2022-09-15T01:50:53+08:00","datePublished":"2021-09-10T00:00:00+08:00","description":"Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，个人感觉很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容对于一些Arch下游的Linux发行版(比如Manjaro)也是有用的。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。","headline":"Arch Linux安装","mainEntityOfPage":{"@type":"WebPage","@id":"https://linhandev.github.io//posts/Arch-Install/"},"url":"https://linhandev.github.io//posts/Arch-Install/"}</script><title>Arch Linux安装 | Lin's Blog</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Lin's Blog"><meta name="application-name" content="Lin's Blog"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src=" https://linhandev.github.io/assets/img/avatar.jpeg " alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Lin's Blog</a></div><div class="site-subtitle font-italic">Coder by Choice</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <a href="https://github.com/linhandev" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href="https://twitter.com/linhandev" aria-label="twitter" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['me','linhan.email'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>Arch Linux安装</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Arch Linux安装</h1><div class="post-meta text-muted"><div> By <em> <a href="https://twitter.com/linhandev">Lin</a> </em></div><div class="d-flex"><div> <span> Posted <em class="timeago" data-ts="1631203200" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2021-09-10 </em> </span> <span> Updated <em class="timeago" data-ts="1663177853" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2022-09-14 </em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="5203 words"> <em>28 min</em> read</span></div></div></div><div class="post-content"><p>Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，个人感觉很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容对于一些Arch下游的Linux发行版(比如Manjaro)也是有用的。AUR(Arch User Respository)提供了大量的软件安装脚本，基本上装所有的东西都只需要一行命令。总结起来就是简单且强大。</p><p>下文所有折叠的块都是可选步骤，主要包括ssh连接，mdadm raid和btrfs文件系统，不需要的话直接跳过。</p><details> <summary> 折叠块长这样 </summary><p>折叠起来的都是可选步骤，不需要直接跳过</p></details><h1 id="硬件需求">硬件需求</h1><ul><li>CPU：x86架构，绝大多数电脑都是。Arch有专门的ARM版本<li>RAM：512M以上<li>硬盘：2G以上<li>网：wifi就行，查网线更简单<li>U盘：做虚拟机不需要。8G肯定够用，镜像不到1G。读写速度主要影响做启动盘的时间，安装过程中联网下载比较多，从U盘中读写比较少</ul><h1 id="iso">iso</h1><p><a href="https://archlinux.org/download/">Arch官方镜像列表</a>里有所有的iso下载地址，国内从<a href="https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/latest/">清华源</a>下一般比较快。文件名是 <code class="language-plaintext highlighter-rouge">archlinux-年月日-x86_64.iso</code>，蓝色那行</p><p><img data-src="https://user-images.githubusercontent.com/29757093/171315041-335255a7-8c44-4b4d-86f8-c6f03b5ba055.png" alt="image" data-proofer-ignore></p><p>做虚拟机不需要做启动盘，直接用iso。在物理机器上装，<a href="https://www.balena.io/etcher/">Etcher</a>非常适合做任何Linux发行版的安装盘。使用简单，大都一次成功。选盘的时候注意，别选错了！！！否则可能把正在用的盘格掉。Etcher一般会把不像U盘的设备折叠起来，一般会是最小的一个盘，仔细看一眼肯定不至于选错。即使手上有之前的启动盘也建议做一个新的，Arch更新比较频繁，用旧的启动盘可能会出一些软件兼容的小问题，最新的镜像可以避免麻烦。</p><h1 id="开始安装">开始安装</h1><p>插入做好的启动盘，重启电脑选择U盘作为启动媒体，一般是按住F1，F2, F5，F10，F12中的一个键时候按电源键。启动后选择Arch Linux install medium。</p><p><img data-src="https://user-images.githubusercontent.com/29757093/139161890-baedb7c9-3080-4c44-bd33-9d514bbe4ce3.png" alt="image" data-proofer-ignore></p><p>之后会进到一个命令行，开头的提示符是root@archiso，如下</p><p><img data-src="https://user-images.githubusercontent.com/29757093/139161941-9e1e6abc-4e50-4797-b15d-8216001e2866.png" alt="image" data-proofer-ignore></p><p>todo live字体 terminus font</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>setfont ter-132n
+</pre></table></code></div></div><h1 id="键位">键位</h1><p>国内的键盘一般都不需要改键位，如果需要可以参考<a href="https://wiki.archlinux.org/title/installation_guide#Set_the_console_keyboard_layout">官方教程</a></p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>locale-ctl list-keymaps | <span class="nb">grep</span> <span class="o">[</span>键盘布局缩写]
+loadkeys <span class="o">[</span>键盘布局名]
+</pre></table></code></div></div><h2 id="联网"><span class="mr-2">联网</span><a href="#联网" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>安装过程中需要联网下软件。可以ping一个网站检查网络连接</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>ping baidu.com
+<span class="c"># ctrl c 停止</span>
+</pre></table></code></div></div><p>如果看到 Name or service not know之类的报错就是目前没网。</p><p><img data-src="https://user-images.githubusercontent.com/29757093/139162328-17fe7acf-ddf2-4c69-a537-e9afaba1e19d.png" alt="image" data-proofer-ignore></p><p>直接插网线最简单，不需要进行额外操作。连wifi Arch推荐用<a href="https://wiki.archlinux.org/title/Iwd#Connect_to_a_network">iwctl</a>。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>iwctl device list <span class="c"># 列出所有网络接口</span>
+ip <span class="nb">link set</span> <span class="o">[</span>网络接口] up <span class="c"># 我的叫 wlan0。先打开硬件，关闭硬件是down</span>
+iwctl <span class="c"># 进入iwctl</span>
+device list <span class="c"># 列出所有网络接口，一般会有一个lo是环回的，不是这个。需要用的设备大概叫wlan0</span>
+station <span class="o">[</span>网络接口] scan
+station <span class="o">[</span>网络接口] get-networks <span class="c"># 获取所有wifi</span>
+station <span class="o">[</span>网络接口] connect <span class="o">[</span>wifi name] <span class="c"># 之后输密码</span>
+quit <span class="c"># 退出iwctl</span>
+</pre></table></code></div></div><p>连接完成重新ping一下，这时候应该看到能ping通。</p><p><img data-src="https://user-images.githubusercontent.com/29757093/139162642-68f2027f-d4cb-4e5f-9689-c36443c51323.png" alt="image" data-proofer-ignore></p><p>连接8021x校园网<a href="https://unix.stackexchange.com/questions/145366/how-to-connect-to-an-802-1x-wireless-network-via-nmcli/334675">1</a> <a href="https://www.reddit.com/r/archlinux/comments/pb3r0f/cannot_connect_to_college_wifi_using/">2</a></p><h2 id="ssh"><span class="mr-2">ssh</span><a href="#ssh" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><details> <summary> 可选步骤。用另一台电脑ssh到正在装的电脑上可以复制命令，方便一点 </summary><p>启动盘的live系统不能复制，一些命令手打比较麻烦。可以考虑用另一台机器ssh到要安装的机器上，方便一点。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>  <span class="c"># pacman -Syy openssh # 安装ssh，最新的arch iso已经带openssh了，不需要装</span>
+  systemctl start sshd <span class="c"># 启动ssh服务</span>
+  passwd root <span class="c"># 给root设置密码</span>
+  ip a <span class="c"># 查看机器ip</span>
+
+  <span class="c"># 在另一台机器上</span>
+  ssh root@[上面ip a看到的ip]
+</pre></table></code></div></div></details><h2 id="硬盘分区"><span class="mr-2">硬盘分区</span><a href="#硬盘分区" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>硬盘上创建了文件系统才能用。首先检查电脑是不是用了uefi</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">ls</span> /sys/firmware/efi/efivars
+</pre></table></code></div></div><p>如果说没有这个路径那就是没用uefi，下面分区的时候跳过uefi分区的部分。如果像下图一样出了一堆文件就是用了uefi，需要做一个uefi分区。</p><p><img data-src="https://user-images.githubusercontent.com/29757093/155045718-cd58db21-29a2-404e-8d9c-6da3589d608a.png" alt="image" data-proofer-ignore></p><p>除了uefi分区至少还需要一个root分区，一般还会做一个swap。一些特殊用途的系统比如服务器可能/srv或者/var下会存巨多的文件，这样可以给这个路径单开一个分区放到一个比较大的盘上，这个过程和做root分区是相同的。这个教程就做三个分区：uefi，root和swap。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>lsblk <span class="c"># 查看机器硬盘情况</span>
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153557189-0d2d5652-8e60-46ba-b131-30a88af07957.png" alt="image" data-proofer-ignore></p><p>这里sda是U盘启动盘，nvme0n1和nvme1n1是ssd。</p><p>进入gdisk开始创建分区</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>gdisk /dev/[盘号] <span class="c"># 注意这块就写到盘，不要写到分区p1p2这种的</span>
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153557435-8e429654-fb00-438a-a823-20fa5acae7cb.png" alt="image" data-proofer-ignore></p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>d <span class="c"># 之后打一个数字分区号删除它，多次执行直到提示没有分区</span>
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153557471-6bd00602-e2d6-411b-8080-bf5704277e4b.png" alt="image" data-proofer-ignore></p><p>首先做efi分区，如果上面没有uefi就跳过这段，直接创建下面的主分区</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>n <span class="c"># 创建分区</span>
+<span class="c"># 回车，默认分区号</span>
+<span class="c"># 回车，默认起始位置</span>
++512M <span class="c"># 大小512M</span>
+ef00 <span class="c"># 修改分区类型为efi分区</span>
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153557577-b1c4017e-2ee4-4de0-bbaf-d70669d8b47f.png" alt="image" data-proofer-ignore></p><p>创建主分区</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>n <span class="c"># 创建新分区</span>
+<span class="c"># 回车，默认分区号</span>
+<span class="c"># 回车，默认起始位置</span>
+<span class="nt">-8G</span> <span class="c"># 这个8G就是给swap留下的大小，一般swap跟内存大小相同。如果有两块盘可以都做一个swap分区，分别内存一半大小</span>
+<span class="c"># 回车，分区类型默认就是Linux文件系统</span>
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153557905-270aafcc-1db9-4c6e-9831-3f16b2303940.png" alt="image" data-proofer-ignore></p><p>创建swap</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>n
+<span class="c"># 回车，默认分区号</span>
+<span class="c"># 回车，默认起始位置</span>
+<span class="c"># 回车，直接占满剩下的容量</span>
+8200 <span class="c"># Linux swap</span>
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153557958-ae7e3ef2-4779-41fb-9842-fc2018b15c25.png" alt="image" data-proofer-ignore></p><p>分区创建完成，看一下目前磁盘情况，应该有三个分区，类型分别是EFI，Linux和Linux swap。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>p
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153558007-fab52bfa-32a7-40b5-b5a1-850bbf366157.png" alt="image" data-proofer-ignore></p><p>如果没问题就把修改写入磁盘</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>w <span class="c"># 确认无误后写入</span>
+Y <span class="c"># 确认</span>
+lsblk <span class="c"># 再次查看分区情况</span>
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153558144-8da25103-5029-4eac-973d-b8143aa35641.png" alt="image" data-proofer-ignore></p><p>之后需要在分区上创建文件系统</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># mkfs.vfat /dev/[uefi分区] # 没有uefi分区跳过这行</span>
+mkfs.fat <span class="nt">-F32</span> /dev/[uefi分区] <span class="c"># 没有uefi分区跳过这行</span>
+mkswap /dev/[swap分区]
+swapon /dev/[swap分区]
+<span class="c"># swapon 也可以写多个swap分区，比如 swapon /dev/nvme0n1p2 /dev/nvme1n1p3，这样多个swap分区应该会像raid 0一样做stripping加快速度</span>
+</pre></table></code></div></div><p>主分区文件系统有三种选择，绝大多数情况下最简单的ext4是最合适的，跑下面这一行之后直接到<a href="#安装arch">安装Arch</a>一节就可以。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>mkfs.ext4 /dev/[主分区]
+</pre></table></code></div></div><p>如果想提升一点读写速度可以做<a href="#raid">软件raid</a>，如果想要snapshot功能可以用<a href="#btrfs">btrfs</a>文件系统。</p><h2 id="raid"><span class="mr-2">Raid</span><a href="#raid" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><details> <summary> 可选步骤。软件Raid可以提升一些读写速度 </summary><p>之前在搜教程的时候看到一个Arch + Raid 0经验贴下面的的<a href="https://forum.level1techs.com/t/arch-linux-install-with-2-nvmes-in-raid-0/147268/2">评论</a>，笑了一下午。必须放在这 /笑哭</p><p><img data-src="https://user-images.githubusercontent.com/29757093/152065902-cb1b40ca-3005-48c9-9415-0cd39a9e38f4.png" alt="image" data-proofer-ignore></p><p>个人在存储技术方面可以说没有任何经验，下面的背景部分只是记录一些自己在调研过程中的理解和想法。</p><p>基础的软件Raid大概有两条路线，一种是基本的ext4文件系统+软件Raid+逻辑卷管理，另一种是直接用zfs，btfs这种带Raid支持的文件系统。就我的在2块SSD的笔记本上加快读写速度的场景下似乎第一种更合适。</p><p>网上冲浪的过程中感觉btfs风评差很多，在Raid这种追求持续在线和稳定的用例下开发团队似乎并不重视软件质量。评价用btfs不是会不会丢数据的问题，只是什么时候丢数据。zfs功能很多，除了自带Raid以外copy on write带来的灵活创建备份点和快速格式化很大的存储听起来很有用。不过不是做NAS盘比较小ext4还能应付，我也没有备份系统的习惯最多备份文件，所以功能上二者没有决定性的差别。而且因为开源协议的问题zfs不能合进linux内核，自己做iso比较耗时间。综上选了第一条路线。</p><p>Raid的实现分为三大类：硬件Raid，软件Raid和主板Raid(fakeraid)。硬Raid用专门的芯片和独立于uefi的固件实现，性能最好，对主板固件和操作系统来说一个硬Raid的阵列就是一块盘。软件Raid和fakeraid都依赖CPU进行运算，理论上性能差别不是很大，一般没有硬件Raid就会采用软件Raid，fakeraid没人推荐。Raid有多种级别，具体可以参考<a href="https://www.prepressure.com/library/technology/raid">这篇</a>。笔记本大概就是Raid 0 和 Raid 1,主要着眼提速，Raid 0 用一倍的故障率换速度，Raid 1 用一半的空间换容错。我做的是Raid 0不过其他级别流程上区别不大。</p><p>做Raid要分区，因为就算一个厂商一个型号的盘大小也会有一些不同。如果阵列有容错，换盘的时候软件Raid要求换进来的盘和之前的盘大小完全相同。如果直接用整块盘做Raid，之前的盘还偏大就很不巧了。</p><p>做Arch至少要两个，一般有三个分区，分别是uefi，主分区和可选的swap。软件Raid依赖操作系统，而uefi分区在进操作系统之前就要用，所以这个分区要么不Raid要么Raid 1。linux支持多个swap，如果有两个swap在两个盘上默认就会用类似Raid 0的方式读写，所以swap也没必要放进Raid。这样就只需要给系统分区做Raid。如果继续对系统分区细分，只想对存数据的部分进行Raid安装过程和不配Raid完全相同。系统做完之后配Raid挂载就可以。</p><p>废话结束，综上我的两块SSD Raid 0分区布局如下</p><ul><li>SSD 1<ul><li>UEFI分区：512M<li>系统分区：剩下的空间取个整数<li>swap分区： 1/2 swap大小</ul><li>SSD 2<ul><li>系统分区：和SSD 1上的系统分区一样大<li>swap分区： 1/2 swap大小</ul></ul><p>格盘的细节参考下一节，记一下mdadm的内容</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>  <span class="c"># 删除旧记录</span>
+  mdadm <span class="nt">--misc</span> <span class="nt">--zero-superblock</span> /dev/drive
+
+  <span class="c"># 创建Raid 0</span>
+  mdadm <span class="nt">--create</span> /dev/md0 <span class="nt">--level</span><span class="o">=</span>stripe <span class="nt">--raid-devices</span><span class="o">=</span>2 /dev/drive[1-2]
+  <span class="c"># 或者盘分开写</span>
+  mdadm <span class="nt">--create</span> /dev/md0 <span class="nt">--level</span><span class="o">=</span>stripe <span class="nt">--raid-devices</span><span class="o">=</span>2 /dev/drive1 /dev/drive2
+
+  <span class="c"># 查看mdadm运行状态，raid细节</span>
+  <span class="nb">cat</span> /proc/mdstat
+  mdadm <span class="nt">-E</span> /dev/drive[1-2]
+  mdadm <span class="nt">--detail</span> /dev/md0
+
+</pre></table></code></div></div><p>Raid做完之后如下步骤，替换成自己的设备文件</p><ol><li>在分区1上 <code class="language-plaintext highlighter-rouge">mkfs.fat -F32 /dev/[uefi分区]</code><li>在分区3和5上分别 <code class="language-plaintext highlighter-rouge">mkswap /dev/[swap分区]</code><li><code class="language-plaintext highlighter-rouge">swapon /dev/[SSD 1上的swap分区] /dev/[SSD 2上的swap分区]</code><li>在md0里创建一个ext4分区，<code class="language-plaintext highlighter-rouge">mkfs.ext4 /dev/raid 0里的分区</code>，后面mount的时候也mount这个分区</ol><p>Raid部分已经跑起来了，在挂载主分区之后，arch-chroot之前和之后还有几行命令需要执行。</p></details><h2 id="btrfs"><span class="mr-2">btrfs</span><a href="#btrfs" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><details> <summary> 可选步骤。Btrfs提供raid和快照功能，做起来比较复杂不推荐新手用 </summary><p>btrfs和ext4一样是一个文件系统，负责管理存在盘上的文件。btrfs应该只有一个竞品zfs，这两个文件系统融合了传统解决方案ext4+软件Raid+逻辑卷管理的大部分功能。主要的优点是提供快速和不怎么占额外空间的snapshot，此外可以做跨盘的文件系统并开启raid。总体上来说速度更快，功能更多。个人在用btrfs的过程中还没遇到什么大问题，但是和zfs相比btrfs风评差很多，主要是因为bug比较多可能丢数据，而且开发者社区貌似赶不上zfs。但是zfs因为开源协议冲突不能合入linux内核，安装过程比btrfs麻烦一些。研究明白btrfs之后这篇会加做zfs的过程。</p><p>上一节已经做好了root，uefi和swap三个分区，这里从mkfs.btrfs开始。类似逻辑卷，btrfs的文件系统可以跨盘，详情参考<a href="https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices">btrfs wiki</a>，下面是官方给的一些常用例子</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre>  <span class="c"># Create a filesystem across four drives (metadata mirrored, linear data allocation)</span>
+  mkfs.btrfs <span class="nt">-d</span> single /dev/sdb /dev/sdc /dev/sdd /dev/sde <span class="c"># 简单跨盘，不raid</span>
+
+  <span class="c"># Stripe the data without mirroring, metadata are mirrored</span>
+  mkfs.btrfs <span class="nt">-d</span> raid0 /dev/sdb /dev/sdc <span class="c"># 相当于raid0</span>
+
+  <span class="c"># Use raid10 for both data and metadata</span>
+  mkfs.btrfs <span class="nt">-m</span> raid10 <span class="nt">-d</span> raid10 /dev/sdb /dev/sdc /dev/sdd /dev/sde
+
+  <span class="c"># Don't duplicate metadata on a single drive (default on single SSDs)</span>
+  mkfs.btrfs <span class="nt">-m</span> single /dev/sdb
+</pre></table></code></div></div><p>比如我的两块ssd raid</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>  mkfs.btrfs <span class="nt">-f</span> <span class="nt">-d</span> raid0 /dev/nvme0n1p1 /dev/nvme1n1p2
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/153563174-7aba4e07-390e-451e-b607-33e1355a97c9.png" alt="image" data-proofer-ignore></p><p>做好btrfs文件系统之后就是挂载和创建子卷。这里的子卷结构是<a href="https://wiki.archlinux.org/title/Snapper#Suggested_filesystem_layout">Arch Wiki</a>的推荐加上一点个人理解。</p><p>直接用btrfs创建和管理快照比较麻烦，openSUSE社区的snapper比较推荐。snapper在快照的时候不会包含子卷里挂的子卷。根目录必须是一个子卷，所以如果其他子卷挂在根目录下，快照根目录子卷只会包含根目录里不是子卷的目录，这些根目录下的子卷需要分别创建快照，比较麻烦。综上用的子卷结构是整个系统基本上都直接扔到根目录的子卷里，给不希望回滚的目录单独创建子卷挂上去。比如数据库的数据一般在/var目录下，ftp和web的文件一般在/srv下，显卡驱动一类第三方软件一般在/opt下，临时文件一般在/tmp下。这样快照+回滚的时候不会影响到这些子卷里的内容。</p><p>特殊一点的是快照和swap，快照需要单独用一个子卷，否则会快照到快照。btrfs不支持快照swap文件，所以单独开一个子卷放swap文件，不一定用得上，但是反正他也不占地方。之后把home目录单独做子卷拿出去。整体结构如Arch wiki的这个图</p><p><img data-src="https://user-images.githubusercontent.com/29757093/155220812-a00bbf82-db57-4229-86aa-509760b8f77e.png" alt="image" data-proofer-ignore></p><p>todo 研究snapper alternative</p><p>开干</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>  <span class="nv">part_name</span><span class="o">=[</span>btrfs的任意一个分区名字]
+  mount /dev/<span class="k">${</span><span class="nv">part_name</span><span class="k">}</span> /mnt <span class="c"># ${part_name} 是bash变量，前面写的 [btrfs的任意一个分区名字] 会被放到 ${part_name}</span>
+  btrfs subvolume create /mnt/@
+  btrfs su cr /mnt/@home
+  btrfs su cr /mnt/@swap <span class="c"># swap文件推荐放进单独的子卷</span>
+  btrfs su cr /mnt/@.snapshots
+</pre></table></code></div></div><p>挂载子卷，一些参数的解释</p><ul><li>noatime： 不写accesstime，速度更快<li>compress： zlib最慢，压缩最率高；lzo最快，压缩率最低；zstd和zlib兼容，压缩率和速度适中，可以调压缩等级<li>space_cache=v2：将文件系统中空闲的block地址放在缓存里，创建新文件的时候可以立即开始往里写<li>nodatacow：禁用cow，新数据直接覆盖<li>ssd：开启针对ssd的优化<li>discard=async：大概是异步进行trim，可以降低读延迟</ul><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>  umount /mnt
+  mount <span class="nt">-o</span> noatime,compress<span class="o">=</span>lzo,space_cache<span class="o">=</span>v2,ssd,discard<span class="o">=</span>async,subvol<span class="o">=</span>@ /dev/<span class="k">${</span><span class="nv">part_name</span><span class="k">}</span> /mnt
+  <span class="nb">mkdir</span> /mnt/<span class="o">{</span>home,swap,.snapshots<span class="o">}</span>
+  mount <span class="nt">-o</span> noatime,compress<span class="o">=</span>lzo,space_cache<span class="o">=</span>v2,ssd,discard<span class="o">=</span>async,subvol<span class="o">=</span>@home /dev/<span class="k">${</span><span class="nv">part_name</span><span class="k">}</span> /mnt/home
+  mount <span class="nt">-o</span> noatime,compress<span class="o">=</span>lzo,space_cache<span class="o">=</span>v2,ssd,discard<span class="o">=</span>async,subvol<span class="o">=</span>@.snapshots /dev/<span class="k">${</span><span class="nv">part_name</span><span class="k">}</span> /mnt/.snapshots
+  mount <span class="nt">-o</span> nodatacow,ssd,subvol<span class="o">=</span>@swap /dev/<span class="k">${</span><span class="nv">part_name</span><span class="k">}</span> /mnt/swap
+</pre></table></code></div></div></details><h2 id="安装arch"><span class="mr-2">安装Arch</span><a href="#安装arch" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>安装需要联网下载，选一个快的镜像可以节省很多时间</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>pacman <span class="nt">-Syy</span> <span class="c"># 更新pacman数据库</span>
+pacman <span class="nt">-S</span> reflector
+<span class="nb">cp</span> /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bk <span class="c"># 备份镜像列表</span>
+reflector <span class="nt">-c</span> <span class="s2">"CN"</span> <span class="nt">-l</span> 20 <span class="nt">-n</span> 10 <span class="nt">--sort</span> rate <span class="nt">--save</span> /etc/pacman.d/mirrorlist
+</pre></table></code></div></div><p>todo 检查 bash-completion</p><p><img data-src="https://user-images.githubusercontent.com/29757093/155212372-31f34bc2-dfac-49f4-9c06-e36867f9082c.png" alt="image" data-proofer-ignore></p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>mount /dev/[主分区] /mnt <span class="c"># 挂载主分区</span>
+pacstrap /mnt base linux linux-firmware linux-headers vim base-devel opendoas grub efibootmgr git
+genfstab <span class="nt">-U</span> /mnt <span class="o">&gt;&gt;</span> /mnt/etc/fstab
+<span class="nb">cat</span> /mnt/etc/fstab
+</pre></table></code></div></div><details> <summary> Raid </summary><p>把mdadm配置写入文件</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>  mdadm <span class="nt">--detail</span> <span class="nt">--scan</span> <span class="o">&gt;&gt;</span> /mnt/etc/mdadm.conf
+</pre></table></code></div></div></details><p>切换到新装好的系统</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>arch-chroot /mnt
+</pre></table></code></div></div><details> <summary> btrfs </summary><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>  pacman <span class="nt">-S</span> btrfs-progs grub-btrfs
+
+  vim /etc/mkinitcpio.conf
+  <span class="c"># MODULES=(btrfs)</span>
+  mkinitcpio <span class="nt">-p</span> linux
+  systemctl <span class="nb">enable </span>fstrim.timer
+</pre></table></code></div></div></details> <details> <summary> Raid </summary><p>在新系统里装mdadm，和修改一个配置文件。Raid所有配置完成，下面正常安装就行。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>  pacman <span class="nt">-S</span> mdadm
+
+  vim /etc/mkinitcpio.conf
+  <span class="nv">HOOKS</span><span class="o">=(</span>base udev autodetect keyboard modconf block mdadm_udev filesystems fsck<span class="o">)</span> <span class="c"># 在HOOKS这行添加 mdadm_udev</span>
+
+  mkinitcpio <span class="nt">-p</span> linux
+</pre></table></code></div></div></details><h2 id="校准时间"><span class="mr-2">校准时间</span><a href="#校准时间" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># timedatectl list-timezones # 显示所有时区，按q退出</span>
+<span class="c"># ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localetime</span>
+timedatectl set-timezone Asia/Shanghai
+timedatectl set-ntp <span class="nb">true</span> <span class="c"># 开启联网时间校准</span>
+hwclock <span class="nt">--systohc</span>
+</pre></table></code></div></div><p>todo echo “KEYMAP=[键盘布局]” » /etc/vconsole.conf</p><h2 id="语言"><span class="mr-2">语言</span><a href="#语言" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>vim /etc/locale.gen
+<span class="c"># 按 / 进入查找，输入en_US，回车下一条结果</span>
+<span class="c"># 找到 en_US.UTF-8 UTF-8 这一行</span>
+<span class="c"># 按i编辑，删除前面的 #</span>
+
+<span class="c"># 按两次esc进入命令模式</span>
+<span class="c"># 按 / 进入查找，输入zh_CN，回车下一条结果</span>
+<span class="c"># 找到 zh_CN.UTF-8 UTF-8 这一行</span>
+<span class="c"># 按i编辑，删除前面的 #</span>
+
+<span class="c"># 两下esc，输入:wq保存退出</span>
+locale-gen
+<span class="nb">echo </span><span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8 <span class="o">&gt;</span> /etc/locale.conf
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/139164535-05d4f355-2975-4df0-a53d-99a438fee4fa.png" alt="image" data-proofer-ignore></p><h2 id="设置网络"><span class="mr-2">设置网络</span><a href="#设置网络" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nb">hostname</span><span class="o">=[</span>随便选一个hostname] <span class="c"># 不建议用自己的名字之类的个人信息，这个至少局域网里是能看到的</span>
+<span class="nb">echo</span> <span class="k">${</span><span class="nv">hostname</span><span class="k">}</span> <span class="o">&gt;&gt;</span> /etc/hostname
+<span class="nb">cat</span> /etc/hostname
+</pre></table></code></div></div><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="nb">echo</span> <span class="s2">"
+127.0.0.1 localhost
+::1 localhost
+127.0.0.1 </span><span class="k">${</span><span class="nv">hostname</span><span class="k">}</span><span class="s2">.localdomail </span><span class="k">${</span><span class="nv">hostname</span><span class="k">}</span><span class="s2">
+"</span> <span class="o">&gt;&gt;</span> /etc/hosts
+</pre></table></code></div></div><h2 id="安装grub"><span class="mr-2">安装grub</span><a href="#安装grub" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>uefi系统</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="nb">mkdir</span> /boot/efi
+mount /dev/[uefi分区] /boot/efi
+grub-install <span class="nt">--target</span><span class="o">=</span>x86_64-efi <span class="nt">--bootloader-id</span><span class="o">=</span>GRUB <span class="nt">--efi-directory</span><span class="o">=</span>/boot/efi <span class="c"># 注意那个x是小写的</span>
+grub-mkconfig <span class="nt">-o</span> /boot/grub/grub.cfg
+</pre></table></code></div></div><p>非uefi系统</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>pacman <span class="nt">-S</span> grub
+grub-install /dev/[主分区]
+grub-mkconfig <span class="nt">-o</span> /boot/grub/grub.cfg
+</pre></table></code></div></div><h2 id="设置密码"><span class="mr-2">设置密码</span><a href="#设置密码" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>passwd ＃ 设置密码
+</pre></table></code></div></div><h2 id="网络"><span class="mr-2">网络</span><a href="#网络" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>前面设置的网络连接只在这次安装过程中生效，还需要给刚装好的系统装联网软件。下面只写基本的连接wifi的部分，DSL，移动网络之类的连接可以参考<a href="https://linuxhint.com/arch_linux_network_manager/">这篇详细教程</a></p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>pacman <span class="nt">-S</span> wpa_supplicant wireless_tools networkmanager network-manager-applet
+pacman <span class="nt">-S</span> nm-connection-editor
+systemctl <span class="nb">enable </span>NetworkManager.service
+systemctl disable dhcpd.service <span class="c"># 如果说dhcpd not found也没关系，目标就是把他关了</span>
+systemctl <span class="nb">enable </span>wpa_supplicant.service
+</pre></table></code></div></div><p>这里就可以重启进入只有命令行的系统了，可以选择现在重启看一下前面的步骤是不是做的有问题，下面的步骤在进入系统后做，或者也可以不重启直接继续装。</p><h2 id="添加用户"><span class="mr-2">添加用户</span><a href="#添加用户" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>一般日常使用不会直接用root账户，创建一个用户帐户。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="nv">username</span><span class="o">=[</span>用户名]
+useradd <span class="nt">-m</span> <span class="k">${</span><span class="nv">username</span><span class="k">}</span>
+<span class="c"># 添加一行</span>
+<span class="nb">echo</span> <span class="s2">"permit persist </span><span class="k">${</span><span class="nv">username</span><span class="k">}</span><span class="s2"> as root"</span> <span class="o">&gt;&gt;</span> /etc/doas.conf <span class="c"># 允许 用户名 作为root执行，persist是输入一次密码之后一段时间不用再输入</span>
+<span class="nb">mv</span> /usr/bin/sudo /usr/bin/sudo-bk
+<span class="nb">ln</span> <span class="nt">-s</span> /usr/bin/doas /usr/bin/sudo
+passwd <span class="k">${</span><span class="nv">username</span><span class="k">}</span> <span class="c"># 设置新用户密码</span>
+</pre></table></code></div></div><h2 id="桌面"><span class="mr-2">桌面</span><a href="#桌面" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><details> <summary> Btrfs snapshot </summary><p>桌面会装很多包，如果用了btrfs，可以在安装桌面之前做一下snapshot。详细步骤参考<a href="https://linhandev.github.io/posts/Arch-Apps/#btrfs">这里</a></p></details><h3 id="xfce4"><span class="mr-2">xfce4</span><a href="#xfce4" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3></h3><p>lightdm-slick-greeter</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>pacman <span class="nt">-S</span> xorg xfce4 xfce4-goodies lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+systemctl <span class="nb">enable </span>lightdm
+</pre></table></code></div></div><p>220多个包</p><h3 id="kde"><span class="mr-2">KDE</span><a href="#kde" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>pacman <span class="nt">-S</span> xorg plasma plasma-wayland-session kde-applications
+systemctl <span class="nb">enable </span>sddm.service
+</pre></table></code></div></div><p><img data-src="https://user-images.githubusercontent.com/29757093/155061233-99de26b9-e02c-41e3-ae7d-a7c2050b0723.png" alt="image" data-proofer-ignore></p><p>800多个包</p><p>有时候新安装桌面可能遇到登录循环的情况，开机后正常输入用户名密码，结果回车登录之后又回到输入密码界面。这种情况可能是因为没有 /home/[用户名] 目录或者用户没有这个目录的权限，创建试一下。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nb">mkdir</span> /home/[用户名]
+<span class="nb">chown</span> <span class="nt">-R</span> <span class="o">[</span>用户名]:[用户名] /home/[用户名]
+</pre></table></code></div></div><p>安装完成，重启进入系统</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="c"># 按 ctrl+D 退出 chroot</span>
+reboot
+</pre></table></code></div></div><p>重启之后应该就能看到一个登陆界面，登陆进去看到桌面就是安装成功了！如果安装过程中有任何问题欢迎在下方留言。有关一些常用软件的安装在<a href="https://linhandev.github.io/posts/Arch-Apps/">下一篇文章</a>中记录。</p><p>参考资料：</p><p><a href="https://wiki.archlinux.org/title/installation_guide">官方安装教程</a></p><p><a href="https://itsfoss.com/install-arch-linux/">Arch安装教程 (不带swap)</a></p><p><a href="https://frontpagelinux.com/tutorials/how-to-install-arch-linux-installation-guide/">安装教程 (带swap)</a></p><p><a href="https://wiki.archlinux.org/title/Iwd">iwctl连接wifi</a></p><p><a href="https://www.serveradminz.com/blog/installation-of-arch-linux-using-software-raid/">mdadm+arch</a></p><p><a href="https://wiki.archlinux.org/title/RAID">Arch Raid</a></p><p><a href="https://www.youtube.com/watch?v=7ituCCKXmMM&amp;t=1143s&amp;ab_channel=EF-LinuxMadeSimple">Arch Linux BTRFS Install</a></p></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/linux/'>Linux</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/arch/" class="post-tag no-text-decoration" >Arch</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> All Rights Reserved.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Arch Linux安装 - Lin&#39;s Blog&amp;url=https://linhandev.github.io//posts/Arch-Install/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Arch Linux安装 - Lin&#39;s Blog&amp;u=https://linhandev.github.io//posts/Arch-Install/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https://linhandev.github.io//posts/Arch-Install/&amp;text=Arch Linux安装 - Lin&#39;s Blog" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/Medical-Dataset/">医学影像数据集集锦</a><li><a href="/posts/Liver-CT/">腹部CT</a><li><a href="/posts/Application-Layer/">应用层</a><li><a href="/posts/management-security/">管理和安全</a><li><a href="/posts/Arch-Apps/">Arch常用软件</a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/note/">Note</a> <a class="post-tag" href="/tags/iap/">IAP</a> <a class="post-tag" href="/tags/med/">Med</a> <a class="post-tag" href="/tags/arch/">Arch</a> <a class="post-tag" href="/tags/tumor/">Tumor</a> <a class="post-tag" href="/tags/abdominal/">Abdominal</a> <a class="post-tag" href="/tags/atom/">Atom</a> <a class="post-tag" href="/tags/blog/">Blog</a> <a class="post-tag" href="/tags/centos/">Centos</a> <a class="post-tag" href="/tags/ct/">CT</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/Arch-Apps/"><div class="card-body"> <em class="timeago small" data-ts="1639391220" > 2021-12-13 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Arch常用软件</h3><div class="text-muted small"><p> 这篇记录一些 Arch Linux 常用的软件和设置，用于在安装完成后进行设置。 btrfs 如果用了 btrfs 可以考虑保留一个刚安装完系统的快照。这里默认子卷的结构按照安装教程。snapper 默认要用 dbus，如果还在 chroot 里需要重启进系统跑下面的命令。 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 su roo...</p></div></div></a></div><div class="card"> <a href="/posts/Centos-env-setup/"><div class="card-body"> <em class="timeago small" data-ts="1609860136" > 2021-01-05 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Centos环境配置</h3><div class="text-muted small"><p> Centos是基于RedHat Enterprise Linux开源的一个Linux distro，以极高的稳定性闻名。这个Post讲解将Centos作为服务器，安装软件和进行配置的技巧。 虚拟化 一些软件（比如mailcow）可能会对服务器的虚拟化技术有要求，用 virt-what 命令可以推断服务器用的是什么虚拟化技术。一般有要求的都会明确提出来，否则大概就是没...</p></div></div></a></div><div class="card"> <a href="/posts/Mail/"><div class="card-body"> <em class="timeago small" data-ts="1660665600" > 2022-08-17 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Mail</h3><div class="text-muted small"><p> https://github.com/docker-mailserver/docker-mailserver#usage DMS_GITHUB_URL=’https://raw.githubusercontent.com/docker-mailserver/docker-mailserver/master’ wget “${DMS_GITHUB_URL}/docker-compose.ym...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/Git/" class="btn btn-outline-primary" prompt="Older"><p>部署个人Git</p></a> <a href="/posts/Data-Link/" class="btn btn-outline-primary" prompt="Newer"><p>数据链路层</p></a></div><script src="https://utteranc.es/client.js" repo="linhandev/linhandev.github.io" issue-term="pathname" crossorigin="anonymous" async> </script> <script type="text/javascript"> $(function() { const origin = "https://utteranc.es"; const iframe = "iframe.utterances-frame"; const lightTheme = "github-light"; const darkTheme = "github-dark"; let initTheme = lightTheme; if ($("html[data-mode=dark]").length > 0 || ($("html[data-mode]").length == 0 && window.matchMedia("(prefers-color-scheme: dark)").matches)) { initTheme = darkTheme; } addEventListener("message", (event) => { let theme; /* credit to <https://github.com/utterance/utterances/issues/170#issuecomment-594036347> */ if (event.origin === origin) { /* page initial */ theme = initTheme; } else if (event.source === window && event.data && event.data.direction === ModeToggle.ID) { /* global theme mode changed */ const mode = event.data.message; theme = (mode === ModeToggle.DARK_MODE ? darkTheme : lightTheme); } else { return; } const message = { type: "set-theme", theme: theme }; const utterances = document.querySelector(iframe).contentWindow; utterances.postMessage(message, origin); }); }); </script></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2022 <a href="https://twitter.com/linhandev">Lin</a>. <span data-toggle="tooltip" data-placement="top" title="博客内容禁止任何形式转载，尤其到CSDN">All Rights Reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/note/">Note</a> <a class="post-tag" href="/tags/iap/">IAP</a> <a class="post-tag" href="/tags/med/">Med</a> <a class="post-tag" href="/tags/arch/">Arch</a> <a class="post-tag" href="/tags/tumor/">Tumor</a> <a class="post-tag" href="/tags/abdominal/">Abdominal</a> <a class="post-tag" href="/tags/atom/">Atom</a> <a class="post-tag" href="/tags/blog/">Blog</a> <a class="post-tag" href="/tags/centos/">Centos</a> <a class="post-tag" href="/tags/ct/">CT</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lozad/dist/lozad.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/en.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script>

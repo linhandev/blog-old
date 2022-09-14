@@ -1,0 +1,657 @@
+<!DOCTYPE html><html lang="en" data-mode="dark" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="Centos环境配置" /><meta name="author" content="Lin Han" /><meta property="og:locale" content="en" /><meta name="description" content="Centos是基于RedHat Enterprise Linux开源的一个Linux distro，以极高的稳定性闻名。这个Post讲解将Centos作为服务器，安装软件和进行配置的技巧。 虚拟化 一些软件（比如mailcow）可能会对服务器的虚拟化技术有要求，用 1 virt-what 命令可以推断服务器用的是什么虚拟化技术。一般有要求的都会明确提出来，否则大概就是没有。" /><meta property="og:description" content="Centos是基于RedHat Enterprise Linux开源的一个Linux distro，以极高的稳定性闻名。这个Post讲解将Centos作为服务器，安装软件和进行配置的技巧。 虚拟化 一些软件（比如mailcow）可能会对服务器的虚拟化技术有要求，用 1 virt-what 命令可以推断服务器用的是什么虚拟化技术。一般有要求的都会明确提出来，否则大概就是没有。" /><link rel="canonical" href="https://linhandev.github.io//posts/Centos-env-setup/" /><meta property="og:url" content="https://linhandev.github.io//posts/Centos-env-setup/" /><meta property="og:site_name" content="Lin’s Blog" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2021-01-05T23:22:16+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Centos环境配置" /><meta name="twitter:site" content="@linhandev" /><meta name="twitter:creator" content="@Lin Han" /><meta name="google-site-verification" content="StdaX-aj1Cn6KORrAbSA-lotFcfC2BiWqXKNNjjDrYY" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Lin Han"},"dateModified":"2022-09-15T01:50:53+08:00","datePublished":"2021-01-05T23:22:16+08:00","description":"Centos是基于RedHat Enterprise Linux开源的一个Linux distro，以极高的稳定性闻名。这个Post讲解将Centos作为服务器，安装软件和进行配置的技巧。 虚拟化 一些软件（比如mailcow）可能会对服务器的虚拟化技术有要求，用 1 virt-what 命令可以推断服务器用的是什么虚拟化技术。一般有要求的都会明确提出来，否则大概就是没有。","headline":"Centos环境配置","mainEntityOfPage":{"@type":"WebPage","@id":"https://linhandev.github.io//posts/Centos-env-setup/"},"url":"https://linhandev.github.io//posts/Centos-env-setup/"}</script><title>Centos环境配置 | Lin's Blog</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Lin's Blog"><meta name="application-name" content="Lin's Blog"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src=" https://linhandev.github.io/assets/img/avatar.jpeg " alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Lin's Blog</a></div><div class="site-subtitle font-italic">Coder by Choice</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <a href="https://github.com/linhandev" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href="https://twitter.com/linhandev" aria-label="twitter" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['me','linhan.email'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>Centos环境配置</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Centos环境配置</h1><div class="post-meta text-muted"><div> By <em> <a href="https://twitter.com/linhandev">Lin</a> </em></div><div class="d-flex"><div> <span> Posted <em class="timeago" data-ts="1609860136" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2021-01-05 </em> </span> <span> Updated <em class="timeago" data-ts="1663177853" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2022-09-14 </em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="5330 words"> <em>29 min</em> read</span></div></div></div><div class="post-content"><p>Centos是基于RedHat Enterprise Linux开源的一个Linux distro，以极高的稳定性闻名。这个Post讲解将Centos作为服务器，安装软件和进行配置的技巧。</p><h1 id="虚拟化">虚拟化</h1><p>一些软件（比如mailcow）可能会对服务器的虚拟化技术有要求，用</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>virt-what
+</pre></table></code></div></div><p>命令可以推断服务器用的是什么虚拟化技术。一般有要求的都会明确提出来，否则大概就是没有。</p><h1 id="域名">域名</h1><p>做小程序，做https网站等等一些操作可能需要一个域名。域名可以从<a href="https://www.freenom.com/en/index.html">freenom</a>免费弄一个，但是如果做邮件服务器注意免费域名可能被当作垃圾邮件或者在一些地方不让用。特别注意如果是服务器在国内，所有ISP都要求域名进行备案，否则域名就算是解析到服务器也只会展示一个漂亮的阻断访问页面提醒你去备案。虽然不能访问网站但是还是可以解析到的，做邮件服务器或者ssh都可以用。</p><h1 id="httpd">httpd</h1><p>从这里开始进入安装，从最好装的开始。如果你希望用服务器托管网页或者你的前端程序需要访问服务器上的一些文件，那么httpd是一个很方便的选择。<a href="http://httpd.apache.org/">Apache httpd</a> 是一个网页服务器，虽然在现在的标准下看起来可能有点老了，但是小规模场景下效果也不错，安装和使用都很简单。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>yum <span class="nb">install</span> <span class="nt">-y</span> httpd <span class="c"># httpd安装</span>
+systemctl start httpd <span class="c"># 启动</span>
+systemctl status httpd
+systemctl <span class="nb">enable </span>httpd <span class="c"># 开机自动启动</span>
+<span class="c"># systemctl stop httpd # 关闭服务</span>
+</pre></table></code></div></div><p>Centos下，httpd的配置在 /etc/httpd/conf/ 下，用 httpd -t 可以校验修改后的配置有无语法错误。默认网页文件root在 /var/www/html</p><p>现在为了保证安全，很多服务会强制要求https，比如微信小程序不能做http的访问。httpd配置https最简单的方法一定是<a href="https://letsencrypt.org/">LetsEncrept</a> + Cerbot。</p><p>官网上cerbot是通过snap安装的，需要先装snap。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> epel-release
+<span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> snapd
+<span class="nb">sudo </span>systemctl start snapd
+<span class="nb">sudo ln</span> <span class="nt">-s</span> /var/lib/snapd/snap /snap <span class="c"># enable classic snap support</span>
+<span class="nb">sudo </span>snap <span class="nb">install </span>core<span class="p">;</span> <span class="nb">sudo </span>snap refresh core <span class="c"># 更新snap</span>
+</pre></table></code></div></div><p>安装cerbot，并添加到执行路径</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>yum remove <span class="nt">-y</span> certbot <span class="c"># 确保没有之前安装的cerbot残留</span>
+<span class="nb">sudo </span>snap <span class="nb">install</span> <span class="nt">--classic</span> certbot <span class="c"># 安装cerbot</span>
+<span class="nb">sudo ln</span> <span class="nt">-s</span> /snap/bin/certbot /usr/bin/certbot <span class="c"># 链接到执行路径</span>
+</pre></table></code></div></div><p>Let’s Encrept并不给ip颁发证书，你需要一个网址指向自己的ip。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>certbot <span class="nt">--apache</span>  <span class="c"># 获取证书并顺手改了httpd的配置</span>
+<span class="c"># sudo certbot certonly --apache # 只获取证书，不修改配置</span>
+</pre></table></code></div></div><p>可能的bug：</p><ul><li>网络问题<div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>HTTPSConnectionPool<span class="o">(</span><span class="nv">host</span><span class="o">=</span><span class="s1">'acme-staging-v02.api.letsencrypt.org'</span>, <span class="nv">port</span><span class="o">=</span>443<span class="o">)</span>: Max retries exceeded with url: /directory <span class="o">(</span>Caused by NewConnectionError<span class="o">(</span><span class="s1">'&lt;urllib3.connection.HTTPSConnection object at 0x7f1ac78badc0&gt;: Failed to establish a new connection: [Errno -2] Name or service not known'</span><span class="o">))</span>
+</pre></table></code></div></div><p>这个大概是网络的问题，重新跑一遍应该就好了</p><li>VirtualHost</ul><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>Unable to find a virtual host listening on port 80 which is currently needed <span class="k">for </span>Certbot to prove to the CA that you control your domain. Please add a virtual host <span class="k">for </span>port 80.
+<span class="c"># 这是要你在80端口创建一个virtual host，可以在httpd设置中添加</span>
+&lt;VirtualHost <span class="k">*</span>:80&gt;
+    DocumentRoot <span class="s2">"/var/www/html"</span>
+    ServerName 域名
+&lt;/VirtualHost&gt;
+</pre></table></code></div></div><ul><li>找不到ssl模块</ul><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>Could not find ssl_module<span class="p">;</span> not installing certificate.
+<span class="c"># 首先确定自己有没有ssl模块</span>
+<span class="nb">ls</span> /etc/httpd/modules/ | <span class="nb">grep </span>ssl <span class="c"># 如果结果是空的，那需要安装mod_ssl，正常应该显示 mod_ssl.so</span>
+yum <span class="nb">install</span> <span class="nt">-y</span> mod_ssl
+<span class="c"># 确定 mod_ssl.so 存在之后在 httpd.conf 中添加</span>
+LoadModule ssl_module modules/mod_ssl.so
+<span class="c"># 之后重新跑申请证书就可以了</span>
+</pre></table></code></div></div><p>目前cerbot安装已经自带更新证书了，测试自动更新</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>certbot renew <span class="nt">--dry-run</span>
+<span class="c"># Congratulations, all simulated renewals succeeded:</span>
+</pre></table></code></div></div><p>到这就可以通过https访问网页了，证书自动更新，不用担心过期。</p><p>除了网页之外，你可能有一些类似 Flask 的服务不从httpd走流量，而且可能不好配 https。这样可以用httpd配一个端口转发，用httpd监听一个端口的https流量，转发到一个http端口，之后一个类似 Flask 的进程监听这个http端口。响应的数据走相反方向回到用户。这样任何http的服务就可以通过httpd无痛升级到https，而且在服务器内部转发一下也不会有什么安全问题（个人认为）</p><p>上面cerboot会把443端口设置成监听https的，可以按照cerboot的写法添加其他端口的监听来代理自己的服务</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre><span class="c"># httpd的配置在 /etc/httpd/conf.d</span>
+vi /etc/httpd/conf/httpd.conf
+
+<span class="c"># 这么写可以把 5000 端口的 https 流量转到接 8000 端口的 http 服务上，如果同时防火墙挡住 8000/tcp ，不向用户暴露，就可以只让用户访问https的版本了</span>
+
+Listen 5000 https
+&lt;VirtualHost <span class="k">*</span>:5000&gt;
+  ServerName 服务器域名
+  SSLEngine on
+
+  SSLCertificateFile /etc/letsencrypt/live/域名/cert.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/域名/privkey.pem
+
+  ProxyPass / http://localhost:8000/
+  ProxyPassReverse / http://localhost:8000/
+
+  &lt;Proxy <span class="k">*</span><span class="o">&gt;</span>
+    Order deny,allow
+    Allow from all
+  &lt;/Proxy&gt;
+&lt;/VirtualHost&gt;
+</pre></table></code></div></div><h1 id="shell">shell</h1><p><a href="Response: 500 OOPS: cannot read user list file:/etc/vsftpd/vsftpd.userlist # stores usernames.">TODO</a> shell是我喜欢linux最重要的原因，之前用windows的时候也不知道怎么用命令行，到linux之后发现真是巨方便。shell命令太多了，这里就记一些自己用的多的。菜鸟上有比较全的。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="k">for </span>zip <span class="k">in</span> <span class="sb">`</span><span class="nb">ls</span> <span class="k">*</span>.zip<span class="sb">`</span><span class="p">;</span> <span class="k">do </span>unzip <span class="nv">$zip</span><span class="p">;</span> <span class="k">done
+if</span> <span class="o">[</span><span class="si">$(</span>docker ps | <span class="nb">wc</span> <span class="nt">-l</span><span class="si">)</span> <span class="nt">-ne</span> 2]<span class="p">;</span> <span class="k">then </span><span class="nb">echo</span> <span class="s2">"有情况"</span><span class="p">;</span> <span class="k">fi</span>
+
+
+<span class="c"># 查看所有进程</span>
+top <span class="c"># 如果风扇莫名开始响可以看是哪个进程在用cpu</span>
+
+<span class="c"># 查看磁盘占用</span>
+<span class="nb">df</span> <span class="c"># 查看各个挂载点还有多少空间</span>
+<span class="nb">du</span> <span class="c"># 查看一个目录用了多少空间，默认是会递归进去</span>
+<span class="nb">du</span> <span class="nt">-sh</span> <span class="c"># 如果只是想看一个总数</span>
+</pre></table></code></div></div><ul><li>ctrl-s 冻结命令行 这个时候输入的任何命令会被记录但是不会被执行。<li>ctrl-q 解冻命令行 冻结过程中打的命令在这个时候会执行<li>ctrl-l 清屏<li>ctrl-r</ul><h1 id="vim">vim</h1><p><a href="Response: 500 OOPS: cannot read user list file:/etc/vsftpd/vsftpd.userlist # stores usernames.">TODO</a> 对新手来说，vi是让人极其崩溃的。这里只记录一些基本的vi命令和技巧。</p><h1 id="vsftpd">vsftpd</h1><p>这个是ftp服务端程序，ftp客户端有其他的选择，但是这个个人比较熟悉。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+</pre><td class="rouge-code"><pre>yum <span class="nb">install</span> <span class="nt">-y</span> vsftpd
+systemctl start vsftpd
+<span class="c"># systemctl enable vsftpd  # 自动启动三思，因为不一定时刻需要，而且没配好ftp服务端有安全隐患</span>
+
+<span class="c"># 防火墙配置</span>
+firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--permanent</span> <span class="nt">--add-port</span><span class="o">=</span>21/tcp
+firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--permanent</span> <span class="nt">--add-service</span><span class="o">=</span>ftp
+firewall-cmd <span class="nt">--reload</span>
+
+<span class="c"># 备份配置</span>
+<span class="nb">cp</span> /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf.bk
+
+vi /etc/vsftpd/vsftpd.conf
+<span class="c"># 之后需要修改一些vsftpd的设置</span>
+<span class="nv">anonymous_enable</span><span class="o">=</span>NO             <span class="c"># disable  anonymous login</span>
+<span class="nv">local_enable</span><span class="o">=</span>YES		<span class="c"># permit local logins</span>
+<span class="nv">write_enable</span><span class="o">=</span>YES		<span class="c"># enable FTP commands which change the filesystem</span>
+<span class="nv">local_umask</span><span class="o">=</span>022		        <span class="c"># value of umask for file creation for local users</span>
+<span class="nv">dirmessage_enable</span><span class="o">=</span>YES	        <span class="c"># enable showing of messages when users first enter a new directory</span>
+<span class="nv">xferlog_enable</span><span class="o">=</span>YES		<span class="c"># a log file will be maintained detailing uploads and downloads</span>
+<span class="nv">connect_from_port_20</span><span class="o">=</span>YES        <span class="c"># use port 20 (ftp-data) on the server machine for PORT style connections</span>
+<span class="nv">xferlog_std_format</span><span class="o">=</span>YES          <span class="c"># keep standard log file format</span>
+<span class="nv">listen</span><span class="o">=</span>NO   			<span class="c"># prevent vsftpd from running in standalone mode</span>
+<span class="nv">listen_ipv6</span><span class="o">=</span>YES		        <span class="c"># vsftpd will listen on an IPv6 socket instead of an IPv4 one</span>
+<span class="nv">pam_service_name</span><span class="o">=</span>vsftpd         <span class="c"># name of the PAM service vsftpd will use</span>
+<span class="nv">tcp_wrappers</span><span class="o">=</span>YES  		<span class="c"># turn on tcp wrappers</span>
+<span class="c"># 添加白名单</span>
+<span class="c"># vsftpd will load a list of usernames, from the filename given by userlist_file</span>
+<span class="nv">userlist_enable</span><span class="o">=</span>YES
+<span class="c"># stores usernames</span>
+<span class="nv">userlist_file</span><span class="o">=</span>/etc/vsftpd/vsftpd.userlist
+<span class="c"># 白名单，只有在上面文件里的用户才能登录</span>
+<span class="nv">userlist_deny</span><span class="o">=</span>NO
+
+<span class="c"># 限制只能访问自己的 ~ 路径</span>
+<span class="c"># chroot_local_user=YES</span>
+<span class="c"># allow_writeable_chroot=YES</span>
+</pre></table></code></div></div><p>userlist_enable=YES + userlist_deny=NO 的意思是只允许 /etc/vsftpd/vsftpd.userlist 中的用户登录。所以将想要允许登录的用户添加到这个文件里，一行一个。</p><p>之后重启vsftpd服务，如果显示 500 OOPS: bad bool value in config file for: 某个配置变量，那么可能是这行后面有空格之类造成的，可以用下面这行处理一下</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'s,\r,,;s, *$,,'</span> /etc/vsftpd/vsftpd.conf
+</pre></table></code></div></div><p>到这ftp基本就配置好了并做了简单的安全措施。本地链接服务器的软件推荐<a href="https://filezilla-project.org/">FileZilla</a>。如果ftp协议不好用可以试一下sftp，个人经验sftp比ftp容易成功。ftp能做很多事，如果是生产环境安全方面肯定需要额外差资料研究，这些大概是不够的。</p><h1 id="mysql">Mysql</h1><p>Mysql需要通过Oracle维护的单独的一个repo安装，可以下载官网的rpm添加repo之后安装，参考<a href="https://www.linode.com/docs/databases/mysql/how-to-install-mysql-on-centos-7/">这个</a>教程。但是国内一般这种方法都慢到不行，清华源有这个repo的镜像，参考<a href="https://mirrors.tuna.tsinghua.edu.cn/help/mysql/">官方介绍</a>添加repo，下载速度一般都是很快的。</p><p>下载官方repo</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+<span class="nb">sudo </span>rpm <span class="nt">-ivh</span> mysql-community-release-el7-5.noarch.rpm
+yum update <span class="nt">-y</span>
+</pre></table></code></div></div><p>添加清华源repo</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+</pre><td class="rouge-code"><pre><span class="nb">echo</span> <span class="s2">"
+[mysql-connectors-community]
+name=MySQL Connectors Community
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mysql/yum/mysql-connectors-community-el7-</span><span class="nv">$basearch</span><span class="s2">/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.mysql.com/RPM-GPG-KEY-mysql
+
+[mysql-tools-community]
+name=MySQL Tools Community
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mysql/yum/mysql-tools-community-el7-</span><span class="nv">$basearch</span><span class="s2">/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.mysql.com/RPM-GPG-KEY-mysql
+
+[mysql-5.6-community]
+name=MySQL 5.6 Community Server
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mysql/yum/mysql-5.6-community-el7-</span><span class="nv">$basearch</span><span class="s2">/
+enabled=0
+gpgcheck=1
+gpgkey=https://repo.mysql.com/RPM-GPG-KEY-mysql
+
+[mysql-5.7-community]
+name=MySQL 5.7 Community Server
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mysql/yum/mysql-5.7-community-el7-</span><span class="nv">$basearch</span><span class="s2">/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.mysql.com/RPM-GPG-KEY-mysql
+
+[mysql-8.0-community]
+name=MySQL 8.0 Community Server
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mysql/yum/mysql-8.0-community-el7-</span><span class="nv">$basearch</span><span class="s2">/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.mysql.com/RPM-GPG-KEY-mysql
+"</span> <span class="o">&gt;</span> /etc/yum.repos.d/mysql-community.repo
+</pre></table></code></div></div><p>可能的bug：</p><p>Retrieving key from file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql GPG key retrieval failed: [Errno 14] curl#37 - “Couldn’t open file /etc/pki/rpm-gpg/RPM-GPG-KEY-mysql” 一个校验的问题，最简单的workaround是直接禁用校验。在配置里修改 gpgcheck=0 就能下了，但是这种方法不安全。</p><p>添加完repo就进行安装</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> mysql-server
+<span class="nb">sudo </span>systemctl start mysqld
+mysql_secure_installation <span class="c"># 加强安全，有些版本的初始密码在安装的log文件里，有些默认是空密码</span>
+</pre></table></code></div></div><p>如果安到一半出错想要重来，完全卸载mysql用下面两行。如果只是卸了软件，那些忘了的密码之类的还存在数据文件里，装回来还是会需要密码。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>yum remove mysql mysql-server
+<span class="nb">mv</span> /var/lib/mysql /var/lib/old_backup_mysql <span class="c"># 挪走数据文件，直接删了也行，如果没什么东西</span>
+</pre></table></code></div></div><h2 id="备份"><span class="mr-2">备份</span><a href="#备份" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>其实迁移也可以看成是先备份之后原样创建，很多数据库工具都有备份或者迁移功能，但是我使的workbench之前各种出问题。其实mysql自带的mysqldump就能导出创建表格和插入数据的代码，在少量数据的情况下用起来很方便</p><p>mysqldump -u root -p <database_name> &gt; out.sql 这样在out.sql中就有了一份创建这个数据库并插入代码的脚本。直接用可能会有问题，有外建约束的时候需要先创建被引的表，dump应该不管这个，之后就是dump的时候会声明字符集，插入到新的数据库如果不支持删掉字符集的声明就行。</database_name></p><h1 id="php">PHP</h1><p>php是世界上～ 好的我不说了 /滑稽。貌似CentOS上现在yum的repo只到php5，像wp都要求php7了，最简单的php5安装</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>yum <span class="nb">install</span> <span class="nt">-y</span> php
+systemctl restart httpd
+php <span class="nt">-v</span>
+<span class="nb">echo</span> <span class="s2">"""
+&lt;?php
+ phpinfo();
+?&gt;"""</span> <span class="o">&gt;</span> /var/www/html/test.php
+</pre></table></code></div></div><p>之后访问 hostname/test.php 可以看到php版本之类的信息。如果网页打不开注意看防火墙设置。</p><p>php官方推荐通过remi安装，可以自己指定版本，如果有版本要求都推荐这种方法．</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> epel-release yum-utils
+<span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+<span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> php php-common php-opcache php-mcrypt php-cli php-gd php-curl php-mysqlnd
+php <span class="nt">-v</span>
+<span class="nb">echo</span> <span class="s2">"""
+&lt;?php
+ phpinfo();
+?&gt;"""</span> <span class="o">&gt;</span> /var/www/html/test.php
+</pre></table></code></div></div><h1 id="wordpress">Wordpress</h1><p>有了httpd，mysql和php就可以跑wordpress了。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="c"># 创建sql表和用户</span>
+mysql <span class="nt">-u</span> root <span class="nt">-p</span>
+<span class="c"># 输入密码</span>
+CREATE DATABASE wordpress<span class="p">;</span>
+CREATE USER wordpressuser@localhost IDENTIFIED BY <span class="s1">'password'</span><span class="p">;</span>
+GRANT ALL PRIVILEGES ON wordpress.<span class="k">*</span> TO wordpressuser@localhost IDENTIFIED BY <span class="s1">'password'</span><span class="p">;</span>
+FLUSH PRIVILEGES<span class="p">;</span>
+<span class="nb">exit</span>
+
+<span class="c"># 获取wp</span>
+<span class="nb">cd</span> ~
+wget http://wordpress.org/latest.tar.gz
+<span class="nb">tar </span>xzvf latest.tar.gz
+<span class="nb">sudo </span>rsync <span class="nt">-avP</span> ~/wordpress/ /var/www/html/ <span class="c"># 保留权限复制</span>
+<span class="nb">mkdir</span> /var/www/html/wp-content/uploads
+<span class="nb">sudo chown</span> <span class="nt">-R</span> apache:apache /var/www/html/<span class="k">*</span>
+
+<span class="c"># 之后访问网址　</span>
+http://example.com/wp-admin/install.php
+</pre></table></code></div></div><h1 id="influxdb">InfluxDB</h1><p>上面已经装了一个数据库Mysql，但是如果你的需求是时序数据，比如物联网一些传感器定时产生数据的这种，influxDB是专门针对这个的。比如一定时间窗口下的聚合，mysql实现应该就比较麻烦，influx有默认支持。 8086/tcp 8088/tcp influx通过yum安装，先添加源</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nb">cat</span> <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh"> | sudo tee /etc/yum.repos.d/influxdb.repo
+[influxdb]
+name = InfluxDB Repository - RHEL </span><span class="se">\$</span><span class="sh">releasever
+baseurl = https://repos.influxdata.com/rhel/</span><span class="se">\$</span><span class="sh">releasever/</span><span class="se">\$</span><span class="sh">basearch/stable
+enabled = 1
+gpgcheck = 1
+gpgkey = https://repos.influxdata.com/influxdb.key
+</span><span class="no">EOF
+</span></pre></table></code></div></div><p>之后安装和启动</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>yum <span class="nb">install </span>influxdb <span class="c"># 企业界的东西，装起来就是方便</span>
+systemctl start influxdb
+</pre></table></code></div></div><p>关于怎么使用，<a href="https://docs.influxdata.com/influxdb/v1.8/introduction/get-started/">官方教程</a></p><h1 id="grafana">Grafana</h1><p>Grafana应该是最流行的监控平台，可以对数据库中的数据用多种图表的方式进行展示。老规矩，先添加Grafana源。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="nb">echo</span> <span class="s2">"
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+"</span> <span class="o">&gt;</span> /etc/yum.repos.d/grafana.repo
+</pre></table></code></div></div><p>之后安装启动，添加防火墙规则</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> grafana
+<span class="nb">sudo </span>systemctl daemon-reload
+<span class="nb">sudo </span>systemctl start grafana-server
+<span class="nb">sudo </span>systemctl status grafana-server
+firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--add-port</span><span class="o">=</span>3000/tcp <span class="nt">--permanent</span>
+firewall-cmd <span class="nt">--reload</span>
+</pre></table></code></div></div><h1 id="python3">Python3</h1><p>Centos7 自带的都是2.x的 python，一些包现在已经开始drop对2.x的支持，比如cv2的安装就很费劲，因此上一个3.x的 python 是很有必要的。最初写这个的时候Centos上的repo里最高只到py34，pip都装不上。但是yum已经支持到了py36，而且带pip。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> python3
+</pre></table></code></div></div><p>如果需要更高版本，py36以上目前我只知道可以通过源码编译安装。下面的脚本在37,38,39中的一个版本中都测试通过。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+</pre><td class="rouge-code"><pre><span class="c"># 首先做一波升级</span>
+<span class="nb">sudo </span>yum update <span class="nt">-y</span>
+
+<span class="c"># 因为是编译安装所以需要装一波编译依赖</span>
+yum <span class="nt">-y</span> groupinstall <span class="s2">"Development tools"</span>
+yum <span class="nt">-y</span> <span class="nb">install </span>zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+yum <span class="nb">install</span> <span class="nt">-y</span> libffi-devel zlib1g-dev
+yum <span class="nb">install </span>zlib<span class="k">*</span> <span class="nt">-y</span>
+
+<span class="c"># python.org 下载 .xz 源码压缩包</span>
+<span class="nv">VERSION</span><span class="o">=</span>3.7.9 <span class="c"># 3.7.9, 3.8.8, 3.9.2 测试通过</span>
+<span class="c"># 从python官网下载可能较慢，华为有一个镜像。不带最后的 /</span>
+<span class="nv">base_url</span><span class="o">=</span>https://www.python.org/ftp/python <span class="c"># https://mirrors.huaweicloud.com/python</span>
+wget <span class="k">${</span><span class="nv">base_url</span><span class="k">}</span>/<span class="k">${</span><span class="nv">VERSION</span><span class="k">}</span>/Python-<span class="k">${</span><span class="nv">VERSION</span><span class="k">}</span>.tar.xz
+<span class="nb">tar</span> <span class="nt">-xvf</span> Python-<span class="k">${</span><span class="nv">VERSION</span><span class="k">}</span>.tar.xz <span class="c"># 解压到当前目录</span>
+
+<span class="nb">mkdir</span> /usr/local/python3
+
+<span class="nb">cd </span>Python-<span class="k">${</span><span class="nv">VERSION</span><span class="k">}</span>
+./configure <span class="nt">--prefix</span><span class="o">=</span>/usr/local/<span class="k">${</span><span class="nv">VERSION</span><span class="k">}</span> <span class="nt">--enable-optimizations</span>
+<span class="nt">--with-ssl</span>
+<span class="c"># [TODO] with-ssl 不好使</span>
+<span class="c"># 第一个指定安装的路径，不指定的话，安装过程中可能软件所需要的文件复制到其他不同目录，删除软件很不方便，复制软件也不方便</span>
+<span class="c"># 第二个可以提高python10%-20%代码运行速度</span>
+
+<span class="nb">time </span>make <span class="o">&amp;&amp;</span> make <span class="nb">install</span> <span class="c"># 之后需要编译很长时间，看起来比较吃CPU和IO</span>
+
+<span class="c"># 编译应该不会出什么问题，如果正常结束了就创建到可执行程序的软链接</span>
+<span class="nb">ln</span> <span class="nt">-s</span> /usr/local/<span class="k">${</span><span class="nv">VERSION</span><span class="k">}</span>/bin/python3 /usr/local/bin/python3
+<span class="nb">ln</span> <span class="nt">-s</span> /usr/local/<span class="k">${</span><span class="nv">VERSION</span><span class="k">}</span>/bin/pip3 /usr/local/bin/pip3
+
+<span class="c"># 到这就可以在命令行直接运行 python3 了</span>
+python3 <span class="c"># 之后就能看到版本了，ctrl+d 退出</span>
+
+<span class="c"># 安装 pip</span>
+curl <span class="nt">-O</span> https://bootstrap.pypa.io/get-pip.py
+python3 get-pip.py
+</pre></table></code></div></div><h2 id="换pip源"><span class="mr-2">换pip源</span><a href="#换pip源" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>如果服务器在国内，从pypi下载是比较慢的。一些云服务厂商会提供pypi镜像，内网下载会很快。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="nb">mkdir</span> ~/.pip
+<span class="nb">echo</span> <span class="s2">"
+[global]
+index-url=https://mirror.baidu.com/pypi/simple
+"</span> <span class="o">&gt;</span> ~/.pip/pip.config
+</pre></table></code></div></div><h1 id="paddle-serving">Paddle-Serving</h1><p><a href="Response: 500 OOPS: cannot read user list file:/etc/vsftpd/vsftpd.userlist # stores usernames.">TODO</a>完善内容 甲方有一个深度学习的推荐需求，因此做一个paddleserving。之前用的tfserving是跑在docker容器的，因为当时也菜装的极其绝望，推理相应速度飘忽补丁而且经常自己死掉。但是paddle-serving看起来很简单 paddle官网 paddle-serving github 20年3月paddle-serving 还没有py3的版本，git上说4,5月份会有，pip找不到包的时候注意 之后我这里pip安装有报错，简单来说是这样</p><p>error: command ‘gcc’ failed with exit status 1 —————————————- ERROR: Failed building wheel for subprocess32 正常pip应该是不会有问题的，这里是因为少依赖</p><p>yum install python-devel</p><h1 id="mail">Mail</h1><p>服务器一般不希望装很多东西，如果就是想发个邮件可以用服务器smtp控制其他邮件服务发，服务器上不需要装。服务器就做了很简单的设置</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>vi /etc/mail.rc
+<span class="nb">set </span><span class="nv">from</span><span class="o">=</span>邮箱账号 <span class="nv">smtp</span><span class="o">=</span>smtp.qq.com
+<span class="nb">set </span>smtp-auth-user<span class="o">=</span>邮箱账号  smtp-auth-password<span class="o">=</span>邮箱密码
+<span class="nb">set </span>smtp-auth<span class="o">=</span>login
+<span class="nb">echo</span> <span class="s2">"邮件主题"</span> | mail <span class="nt">-s</span> <span class="s2">"邮件内容,这是测试邮件"</span> xx@163.com
+</pre></table></code></div></div><p>之后就发出去了。但是邮件服务那边必须开通smtp服务，一般在邮箱的设置里面。需要提一下的是qq邮箱smtp服务开通之后邮箱用的密码不是qq密码，而是开通的时候给的密码，写的时候不要写错了。而且开了smtp要注意发出去的邮件，之前遇到过smtp的密码被破了，自己的邮箱被人用来批量发开发票的广告。。</p><h1 id="桌面">桌面</h1><p>虽然服务器基本不需要桌面，但是有一些需求可能会需要。Gnome的桌面比较重，个人比较喜欢XFCE。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>yum <span class="nt">-y</span> <span class="nb">install </span>epel-release
+
+yum <span class="nt">-y</span> groupinstall <span class="s2">"X Window system"</span> <span class="c"># 大概270个包</span>
+yum <span class="nt">-y</span> groupinstall <span class="s2">"Xfce"</span> <span class="c"># 大概140多个包</span>
+systemctl isolate graphical.target <span class="c"># 开启桌面</span>
+Gnome的安装也很简单
+
+yum groupinstall <span class="nt">-y</span> <span class="s2">"GNOME Desktop"</span> <span class="c"># 大概1200个包</span>
+<span class="c"># 网上的教程中还有装这个的，少上100个左右的包，效果应该是一样的</span>
+yum <span class="nt">-y</span> groupinstall <span class="s2">"Server with GUI"</span> <span class="c"># 大概1000个</span>
+</pre></table></code></div></div><h1 id="远程gui">远程GUI</h1><p>https://linuxize.com/post/how-to-install-and-configure-vnc-on-centos-7/ <a href="Response: 500 OOPS: cannot read user list file:/etc/vsftpd/vsftpd.userlist # stores usernames.">TODO</a> 服务器本身没有显示器，但是有很多方案把服务器上的图形界面展示到自己电脑的屏幕上。这个方向基本两个解决方法，VNC和X11forwarding，forwarding比较好弄，但是一般比较卡，需要好好配置。vnc可以在本地关掉窗口之后还继续运行，很方便。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre><td class="rouge-code"><pre>yum <span class="nt">-y</span> groupinstall X11  <span class="c"># 大概300个包</span>
+<span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> tigervnc-server
+
+useradd vnc
+<span class="nb">sudo cp</span> /lib/systemd/system/vncserver@.service /etc/systemd/system/vncserver@:1.service
+<span class="nb">sudo </span>vi /etc/systemd/system/vncserver@:1.service
+<span class="c"># 把里面的用户名改了</span>
+
+<span class="nb">sudo </span>systemctl daemon-reload
+<span class="nb">sudo </span>systemctl <span class="nb">enable </span>vncserver@:1.service
+
+<span class="nb">sudo </span>systemctl start firewalld
+firewall-cmd <span class="nt">--add-port</span><span class="o">=</span>5901/tcp <span class="nt">--permanent</span>
+<span class="c"># sudo firewall-cmd --permanent --zone=public --add-port=5904-5905/tcp</span>
+<span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+
+su vnc
+vncserver
+
+<span class="nb">sudo </span>systemctl daemon-reload
+<span class="nb">sudo </span>systemctl restart vncserver@:1.service
+
+
+<span class="c"># 关闭一个桌面</span>
+vncserver <span class="nt">-kill</span> vultr.guest:1
+</pre></table></code></div></div><h1 id="清理">清理</h1><p>服务器用的时间长了可能各种log，各种cache之类的东西会占很大的磁盘，因此可以考虑定期进行清理。需要注意只要是删除东西的操作都是危险的，要知道自己在干什么。 <a href="https://www.getpagespeed.com/server-setup/clear-disk-space-centos">完整教程</a></p><h1 id="用户管理">用户管理</h1><p>添加一些低权限的用户给别人使用能防止意外的故障。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>useradd <span class="o">[</span>username]
+passwd <span class="o">[</span>username]
+
+gpasswd <span class="nt">-a</span> username wheel <span class="c"># 添加sudo权限</span>
+
+userdel <span class="o">[</span>username]
+</pre></table></code></div></div><h1 id="python-web">Python web</h1><p>flask + gunicorn + supervisor</p><p>当你通过命令行登录服务器启动了一个进程后，退出服务器会默认终止这个进程。如果你不想进程随着退出ssh被kill掉可以使用nohup命令。如果你有一个flask app 在 flask_app.py 里，那么可以执行</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">nohup </span>python flask_app.py &amp;
+</pre></table></code></div></div><p>但是nohup有时候很不稳定，而且没有进程出问题后自动重启，这显然不是一个好的方法，flask本身的WSGI不是为了生产设计的，也不是很稳定。推荐使用gunicorn这种生产级别的wsgi。如果要https可以用端口映射的方式，不一定要在gunicorn中配https。</p><p>supervisor和systemd类似，是用来保证进程一直运行的，如果进程除了问题supervisor可以重启进行，保证后台的稳定。</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre><td class="rouge-code"><pre><span class="c"># 安装</span>
+yum <span class="nb">install </span>supervisor
+<span class="c"># 设置一般在 /etc/supervisord.conf ,至少大概在etc下</span>
+
+systemctl daemon-reload
+systemctl start supervisord
+systemctl status supervisord
+systemctl <span class="nb">enable </span>supervisord
+
+<span class="c"># 到这supervisord本身应该就起来了，之后编辑supervisord.conf添加program</span>
+<span class="o">[</span>program:test]
+<span class="nv">directory</span><span class="o">=</span>/path/to/execute
+<span class="nb">command</span><span class="o">=</span>python3 main.py
+<span class="nv">user</span><span class="o">=</span>root
+<span class="nv">autostart</span><span class="o">=</span><span class="nb">true
+</span><span class="nv">autorestart</span><span class="o">=</span><span class="nb">true
+</span><span class="nv">redirect_stderr</span><span class="o">=</span><span class="nb">true
+</span><span class="nv">stderr_logfile</span><span class="o">=</span>/path/to/errlog
+<span class="nv">stdout_logfile</span><span class="o">=</span>/path/to/stdlog
+
+
+supervisorctl reread <span class="c"># 如果改了config文件，这个命令加载新的</span>
+supervisorctl stop <span class="o">[</span>appname]
+supervisorctl start <span class="o">[</span>appname]
+supervisorctl restart <span class="o">[</span>appname]
+</pre></table></code></div></div><p>在调试过程中可能有时候没有正确关闭服务，这样就会出现address already in use。这个时候重启肯定可以释放端口，但是有点麻烦，可以通过下面一行代码找到占用端口的进程+杀掉它。慎用，他不管这个端口是什么服务</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>fuser <span class="nt">-k</span> 4000/tcp
+</pre></table></code></div></div><h1 id="ruby">Ruby</h1><p>主要是为了gollum wiki要装ruby，把ruby和gollum都记一下。ruby貌似不自举，写这个记录的时候基于c的ruby一个依赖有bug，不知道怎么解决，所以用的jruby，<a href="https://devops.ionos.com/tutorials/install-ruby-214-with-rvm-on-centos/">安装教程</a>。装ruby的时候不写版本号写jruby就行。之后直接</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>yum <span class="nb">install</span> <span class="nt">-y</span> epel-release
+yum <span class="nb">install</span> <span class="nt">-y</span> go
+gem <span class="nb">install</span> <span class="nt">-y</span> gollum
+gollum <span class="c"># 开始运行</span>
+</pre></table></code></div></div><h1 id="软件版本">软件版本</h1><p><a href="Response: 500 OOPS: cannot read user list file:/etc/vsftpd/vsftpd.userlist # stores usernames.">TODO</a>详细研究</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>alternatives <span class="nt">--config</span> cmake
+</pre></table></code></div></div></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/linux/'>Linux</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/centos/" class="post-tag no-text-decoration" >Centos</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> All Rights Reserved.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Centos环境配置 - Lin&#39;s Blog&amp;url=https://linhandev.github.io//posts/Centos-env-setup/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Centos环境配置 - Lin&#39;s Blog&amp;u=https://linhandev.github.io//posts/Centos-env-setup/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https://linhandev.github.io//posts/Centos-env-setup/&amp;text=Centos环境配置 - Lin&#39;s Blog" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/Medical-Dataset/">医学影像数据集集锦</a><li><a href="/posts/Liver-CT/">腹部CT</a><li><a href="/posts/Application-Layer/">应用层</a><li><a href="/posts/management-security/">管理和安全</a><li><a href="/posts/Arch-Apps/">Arch常用软件</a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/note/">Note</a> <a class="post-tag" href="/tags/iap/">IAP</a> <a class="post-tag" href="/tags/med/">Med</a> <a class="post-tag" href="/tags/arch/">Arch</a> <a class="post-tag" href="/tags/tumor/">Tumor</a> <a class="post-tag" href="/tags/abdominal/">Abdominal</a> <a class="post-tag" href="/tags/atom/">Atom</a> <a class="post-tag" href="/tags/blog/">Blog</a> <a class="post-tag" href="/tags/centos/">Centos</a> <a class="post-tag" href="/tags/ct/">CT</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/Arch-Apps/"><div class="card-body"> <em class="timeago small" data-ts="1639391220" > 2021-12-13 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Arch常用软件</h3><div class="text-muted small"><p> 这篇记录一些 Arch Linux 常用的软件和设置，用于在安装完成后进行设置。 btrfs 如果用了 btrfs 可以考虑保留一个刚安装完系统的快照。这里默认子卷的结构按照安装教程。snapper 默认要用 dbus，如果还在 chroot 里需要重启进系统跑下面的命令。 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 su roo...</p></div></div></a></div><div class="card"> <a href="/posts/Arch-Install/"><div class="card-body"> <em class="timeago small" data-ts="1631203200" > 2021-09-10 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Arch Linux安装</h3><div class="text-muted small"><p> Arch是一个十分干净简洁的Linux发行版，日常使用不吃硬件十分流畅。采用滚动更新方式，安装之后更新就行，没有类似重装的升级，个人感觉很适合实验室这种多人共用机器的场景。Arch的社区可能是一众Linux发行版中最好的。Arch Wiki基本能解答所有系统相关的问题，里面的内容对于一些Arch下游的Linux发行版(比如Manjaro)也是有用的。AUR(Arch User Resposi...</p></div></div></a></div><div class="card"> <a href="/posts/Mail/"><div class="card-body"> <em class="timeago small" data-ts="1660665600" > 2022-08-17 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Mail</h3><div class="text-muted small"><p> https://github.com/docker-mailserver/docker-mailserver#usage DMS_GITHUB_URL=’https://raw.githubusercontent.com/docker-mailserver/docker-mailserver/master’ wget “${DMS_GITHUB_URL}/docker-compose.ym...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/Github-Page/" class="btn btn-outline-primary" prompt="Older"><p>玩转Github Pages</p></a> <a href="/posts/Atom/" class="btn btn-outline-primary" prompt="Newer"><p>Atom编辑器配置</p></a></div><script src="https://utteranc.es/client.js" repo="linhandev/linhandev.github.io" issue-term="pathname" crossorigin="anonymous" async> </script> <script type="text/javascript"> $(function() { const origin = "https://utteranc.es"; const iframe = "iframe.utterances-frame"; const lightTheme = "github-light"; const darkTheme = "github-dark"; let initTheme = lightTheme; if ($("html[data-mode=dark]").length > 0 || ($("html[data-mode]").length == 0 && window.matchMedia("(prefers-color-scheme: dark)").matches)) { initTheme = darkTheme; } addEventListener("message", (event) => { let theme; /* credit to <https://github.com/utterance/utterances/issues/170#issuecomment-594036347> */ if (event.origin === origin) { /* page initial */ theme = initTheme; } else if (event.source === window && event.data && event.data.direction === ModeToggle.ID) { /* global theme mode changed */ const mode = event.data.message; theme = (mode === ModeToggle.DARK_MODE ? darkTheme : lightTheme); } else { return; } const message = { type: "set-theme", theme: theme }; const utterances = document.querySelector(iframe).contentWindow; utterances.postMessage(message, origin); }); }); </script></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2022 <a href="https://twitter.com/linhandev">Lin</a>. <span data-toggle="tooltip" data-placement="top" title="博客内容禁止任何形式转载，尤其到CSDN">All Rights Reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/note/">Note</a> <a class="post-tag" href="/tags/iap/">IAP</a> <a class="post-tag" href="/tags/med/">Med</a> <a class="post-tag" href="/tags/arch/">Arch</a> <a class="post-tag" href="/tags/tumor/">Tumor</a> <a class="post-tag" href="/tags/abdominal/">Abdominal</a> <a class="post-tag" href="/tags/atom/">Atom</a> <a class="post-tag" href="/tags/blog/">Blog</a> <a class="post-tag" href="/tags/centos/">Centos</a> <a class="post-tag" href="/tags/ct/">CT</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lozad/dist/lozad.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/en.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script> /* see: <https://docs.mathjax.org/en/latest/options/input/tex.html#tex-options> */ MathJax = { tex: { inlineMath: [ /* start/end delimiter pairs for in-line math */ ['$','$'], ['\\(','\\)'] ], displayMath: [ /* start/end delimiter pairs for display math */ ['$$', '$$'], ['\\[', '\\]'] ] } }; </script> <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"> </script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script>
